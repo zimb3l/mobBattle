@@ -1,0 +1,4 @@
+name: mobBattle
+version: '${project.version}'
+main: org.dlds.mobbattle.MobBattle
+api-version: '1.20'
