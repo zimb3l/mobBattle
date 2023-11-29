@@ -97,7 +97,7 @@ public final class MobBattle extends JavaPlugin {
         }
     }
 
-
+//
     private class LocationSafetyPair{
         public Location location;
         public boolean isSafe;
