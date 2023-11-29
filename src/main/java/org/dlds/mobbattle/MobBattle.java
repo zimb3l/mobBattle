@@ -15,9 +15,22 @@ import org.bukkit.potion.PotionEffect;
 import org.bukkit.potion.PotionEffectType;
 import java.util.ArrayList;
 import java.util.List;
+import org.bukkit.scheduler.BukkitRunnable;
+import org.bukkit.scoreboard.Scoreboard;
+import org.bukkit.scoreboard.ScoreboardManager;
+import org.bukkit.scoreboard.Objective;
+import org.bukkit.scoreboard.DisplaySlot;
 public final class MobBattle extends JavaPlugin {
 
 
+    private int updateTimeMin = 30;
+    private int localTime = updateTimeMin * 60;
+    public int getCurrentPlayerCount() {
+        return Bukkit.getServer().getOnlinePlayers().size();
+    }
+    private int startDistance = 300; // Defines distance from spawn (0,0)
+    private int locationCount = 24; // Defines number of calculated spawn locations
+    private List<LocationSafetyPair> spawnLocations = new ArrayList<>();
 
     @Override
     public void onEnable() {
@@ -28,6 +41,41 @@ public final class MobBattle extends JavaPlugin {
     @Override
     public void onDisable() {
         // Plugin shutdown logic
+    }
+
+    private void setupScoreboardDisplay() {
+        ScoreboardManager manager = Bukkit.getScoreboardManager();
+        if (manager == null) return;
+
+        final Scoreboard scoreboard = manager.getNewScoreboard();
+        final Objective objective = scoreboard.registerNewObjective("mobBattle", "dummy", "Mob Battle");
+        objective.setDisplaySlot(DisplaySlot.SIDEBAR);
+
+        final int totalTimeTilUpdate = 60 * updateTimeMin;
+        localTime = totalTimeTilUpdate; // Initialize localTime
+
+        new BukkitRunnable() {
+            @Override
+            public void run() {
+                int minutes = localTime / 60;
+                int seconds = localTime % 60;
+
+                String timeString = String.format("Time: %02d:%02d", minutes, seconds);
+
+                objective.getScore(timeString).setScore(1); // Update the scoreboard
+
+                if (localTime <= 0) {
+                    localTime = totalTimeTilUpdate; // Reset the timer
+                    // TODO PLACEHOLDER -- HERE GOES WHAT HAPPENS WHEN TIMER REACHES ZERO
+                } else {
+                    localTime--; // Decrease the timer by 1 second
+                }
+
+                for (Player player : Bukkit.getServer().getOnlinePlayers()) {
+                    player.setScoreboard(scoreboard);
+                }
+            }
+        }.runTaskTimer(this, 0, 20); // Update every second
     }
 
     public void assignPlayerSpawns(){
@@ -49,12 +97,6 @@ public final class MobBattle extends JavaPlugin {
         }
     }
 
-    public int getCurrentPlayerCount() {
-        return Bukkit.getServer().getOnlinePlayers().size();
-    }
-    private int startDistance = 300; // Defines distance from spawn (0,0)
-    private int locationCount = 24; // Defines number of calculated spawn locations
-    private List<LocationSafetyPair> spawnLocations = new ArrayList<>();
 
     private class LocationSafetyPair{
         public Location location;
@@ -90,7 +132,7 @@ public final class MobBattle extends JavaPlugin {
 
         calculateSpawnLocations();
         assignPlayerSpawns();
-
+        setupScoreboardDisplay();
     }
 
     private void calculateSpawnLocations() {
@@ -133,8 +175,6 @@ public final class MobBattle extends JavaPlugin {
     }
 
     public boolean setSpawnCount(int newCount, CommandSender sender){
-
-
         if (newCount > 0) {
             locationCount = newCount;
             sender.sendMessage(Component.text("Spawn counts set to " + locationCount + " blocks.",
@@ -146,13 +186,26 @@ public final class MobBattle extends JavaPlugin {
         }
         return true;
     }
-
-
+    public boolean editUpdateTime(int newTime, CommandSender sender){
+        if (newTime > 0) {
+            updateTimeMin = newTime;
+            sender.sendMessage(Component.text("Update timer set to " + updateTimeMin + " blocks.",
+                    NamedTextColor.GREEN));
+        }
+        else {
+            sender.sendMessage(Component.text("Please specify a update timer.", NamedTextColor.RED));
+            return false;
+        }
+        return true;
+    }
 
 
     public boolean onCommand(CommandSender sender, Command command, String label, String[] args) {
         boolean retval;
         int distance;
+        int timer;
+        int spawncount;
+
         if (command.getName().equalsIgnoreCase("setdistance")) {
             if (!sender.hasPermission("mobbattle.setdistance")) {
                 sender.sendMessage(Component.text("You do not have permission to use this command.",
@@ -166,14 +219,59 @@ public final class MobBattle extends JavaPlugin {
                 return false;
             }
             retval = setStartDistance(distance, sender);
+            sender.sendMessage(Component.text("Playing radius set to " + distance +" blocks.",
+                    NamedTextColor.GREEN));
             return retval;
         }
+
+        if (command.getName().equalsIgnoreCase("settimer")) {
+            if (!sender.hasPermission("mobbattle.settimer")) {
+                sender.sendMessage(Component.text("You do not have permission to use this command.",
+                        NamedTextColor.RED));
+                return false;
+            }
+            try{
+                timer = Integer.parseInt(args[0]);
+            } catch (NumberFormatException e){
+                sender.sendMessage(Component.text("Invalid number format.", NamedTextColor.RED));
+                return false;
+            }
+            retval = editUpdateTime(timer, sender);
+            sender.sendMessage(Component.text("Scoreboard will update every " + timer +" minutes.",
+                    NamedTextColor.GREEN));
+            return retval;
+        }
+
+        if (command.getName().equalsIgnoreCase("setspawncount")) {
+            if (!sender.hasPermission("mobbattle.setspawncount")) {
+                sender.sendMessage(Component.text("You do not have permission to use this command.",
+                        NamedTextColor.RED));
+                return false;
+            }
+            try{
+                spawncount = Integer.parseInt(args[0]);
+            } catch (NumberFormatException e){
+                sender.sendMessage(Component.text("Invalid number format.", NamedTextColor.RED));
+                return false;
+            }
+            sender.sendMessage(Component.text("Calculated number of spawns set to " + spawncount,
+                    NamedTextColor.GREEN));
+            retval = setSpawnCount(spawncount, sender);
+            return retval;
+        }
+
         if(command.getName().equalsIgnoreCase("startBattle")){
             if (!sender.hasPermission("mobbattle.startBattle")) {
                 sender.sendMessage(Component.text("You do not have permission to use this command.",
                         NamedTextColor.RED));
                 return false;
             }
+            sender.sendMessage(Component.text("GET READY, GAME WILL START NOW!!",
+                    NamedTextColor.GREEN));
+            sender.sendMessage(Component.text("GET READY, GAME WILL START NOW!!",
+                    NamedTextColor.AQUA));
+            sender.sendMessage(Component.text("GET READY, GAME WILL START NOW!!",
+                    NamedTextColor.DARK_AQUA));
             startBattle();
         }
 
