@@ -15,7 +15,7 @@ public class TimerHandler {
     final String name_string = "mobBattle";
     static final Criteria criteria = Criteria.DUMMY;
     final String display_name_string = "Mob Battle";
-
+//
     void setupScoreboardDisplay() {
         ScoreboardManager manager = Bukkit.getScoreboardManager();
 
