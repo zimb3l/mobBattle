@@ -75,90 +75,92 @@ public void onPlayerInteract(PlayerInteractEvent event) {
 /*
 * Passive Mobs (harmless, can be bred or tamed):
 
-    Allay
-    Axolotl
-    Bat
-    Cat
-    Chicken
-    Cod
-    Cow
-    Donkey
-    Fox
-    Frog
-    Glow Squid
-    Horse
-    Mooshroom
-    Mule
-    Ocelot
-    Parrot
-    Pig
-    Pufferfish (defensive)
-    Rabbit
-    Salmon
-    Sheep
-    Skeleton Horse
-    Snow Golem
-    Squid
-    Strider
-    Tadpole
-    Tropical Fish
-    Turtle
-    Villager/Wandering Trader
-    Camel
-    Sniffer (Upcoming)
+    Category 1: 1 point
+        Cow
+        Sheep
+        Pig
+        Chicken
+        Squid
 
-Neutral Mobs (do not attack unless provoked):
+    Category 2: 3 points
+        Zombie
+        Horse
+        Donkey
+        Creeper
+        Skeleton
+        Villager/Wandering Trader
+        Wolf
+        Cat
+        Slime
+        Drowned
+        Spider
+        Silverfish
+        Bat
 
-    Bee
-    Cave Spider
-    Dolphin
-    Enderman
-    Goat
-    Iron Golem (naturally spawned)
-    Llama
-    Panda
-    Piglin
-    Polar Bear
-    Spider
-    Trader Llama
-    Wolf
-    Zombified Piglin
+    Category 3: 5 points
+        Axolotl
+        Cave Spider
+        Bee
+        Glow Squid
+        Rabbit
+        Goat
+        Fox
+        Parrot
+        Snow Golem
+        Turtle
+        Husk
+        Witch
+        Zombie Villager
 
-Hostile Mobs (attack on sight):
+    Category 4: 10 points
+        Mule
+        Frog
+        Strider
+        Ocelot
+        Camel
+        Llama
+        Enderman
+        Iron Golem
+        Panda
+        Guardian
+        Endermite
+        Ghast
+        Hoglin
+        Phantom
+        Pillager
+        Stray
+        Vex
+        Vindicator
+        Wither Skeleton
+        Zoglin
 
-    Blaze
-    Chicken Jockey
-    Creeper
-    Drowned
-    Elder Guardian
-    Endermite
-    Evoker
-    Ghast
-    Guardian
-    Hoglin
-    Husk
-    Magma Cube
-    Phantom
-    Piglin Brute
-    Pillager
-    Ravager
-    Shulker
-    Silverfish
-    Skeleton
-    Skeleton Horseman
-    Slime
-    Spider Jockey
-    Stray
-    Vex
-    Vindicator
-    Warden
-    Witch
-    Wither Skeleton
-    Zoglin
-    Zombie
-    Zombie Villager
+    Category 5: 25 points
+        Allay
+        Tadpole
+        Skeleton Horse
+        Dolphin
+        Polar Bear
+        Piglin
+        Piglin Brute
+        Zombified Piglin
+        Blaze
+        Magma Cube
 
-Boss Mobs (powerful, require strategy to defeat):
+    Category 6: 50 points
+        Mooshroom
+        Elder Guardian
+        Evoker
+        Ravager
+        Shulker
 
-    Ender Dragon
-    Wither*/
+    Category 7: 100 points
+        Player
+        Warden
+        Sniffer
+
+    Category 8: 150 points
+        Wither
+
+    Category 9: 250 points
+        Ender Dragon
+ */
