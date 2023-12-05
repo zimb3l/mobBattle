@@ -70,3 +70,95 @@ public void onPlayerInteract(PlayerInteractEvent event) {
         }
     }
 }
+
+//TODO:Group and sort into different categories based on how hard they are to kill
+/*
+* Passive Mobs (harmless, can be bred or tamed):
+
+    Allay
+    Axolotl
+    Bat
+    Cat
+    Chicken
+    Cod
+    Cow
+    Donkey
+    Fox
+    Frog
+    Glow Squid
+    Horse
+    Mooshroom
+    Mule
+    Ocelot
+    Parrot
+    Pig
+    Pufferfish (defensive)
+    Rabbit
+    Salmon
+    Sheep
+    Skeleton Horse
+    Snow Golem
+    Squid
+    Strider
+    Tadpole
+    Tropical Fish
+    Turtle
+    Villager/Wandering Trader
+    Camel
+    Sniffer (Upcoming)
+
+Neutral Mobs (do not attack unless provoked):
+
+    Bee
+    Cave Spider
+    Dolphin
+    Enderman
+    Goat
+    Iron Golem (naturally spawned)
+    Llama
+    Panda
+    Piglin
+    Polar Bear
+    Spider
+    Trader Llama
+    Wolf
+    Zombified Piglin
+
+Hostile Mobs (attack on sight):
+
+    Blaze
+    Chicken Jockey
+    Creeper
+    Drowned
+    Elder Guardian
+    Endermite
+    Evoker
+    Ghast
+    Guardian
+    Hoglin
+    Husk
+    Magma Cube
+    Phantom
+    Piglin Brute
+    Pillager
+    Ravager
+    Shulker
+    Silverfish
+    Skeleton
+    Skeleton Horseman
+    Slime
+    Spider Jockey
+    Stray
+    Vex
+    Vindicator
+    Warden
+    Witch
+    Wither Skeleton
+    Zoglin
+    Zombie
+    Zombie Villager
+
+Boss Mobs (powerful, require strategy to defeat):
+
+    Ender Dragon
+    Wither*/
