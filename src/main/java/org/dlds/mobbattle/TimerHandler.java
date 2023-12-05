@@ -15,12 +15,13 @@ public class TimerHandler {
     final String name_string = "mobBattle";
     static final Criteria criteria = Criteria.DUMMY;
     final String display_name_string = "Mob Battle";
+    net.kyori.adventure.text.Component display_name = net.kyori.adventure.text.Component.text(display_name_string);
 
     void setupScoreboardDisplay() {
         ScoreboardManager manager = Bukkit.getScoreboardManager();
 
-        final Scoreboard scoreboard = manager.getNewScoreboard();
-        final Objective objective = scoreboard.registerNewObjective(name_string, criteria, display_name_string);
+        Scoreboard scoreboard = manager.getNewScoreboard();
+        Objective objective = scoreboard.registerNewObjective(name_string, criteria, display_name);
         objective.setDisplaySlot(DisplaySlot.SIDEBAR);
 
         final int totalTimeTilUpdate = 60 * updateTimeMin;

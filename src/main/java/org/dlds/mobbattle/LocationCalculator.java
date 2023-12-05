@@ -12,7 +12,7 @@ import java.util.List;
 public class LocationCalculator {
     int locationCount = 24; // Defines number of calculated spawn locations
     int startDistance = 300; // Defines distance from spawn (0,0)
-    private final List<LocationSafetyPair> spawnLocations = new ArrayList<>();
+    private List<LocationSafetyPair> spawnLocations = new ArrayList<>();
     public int getCurrentPlayerCount() {
         return Bukkit.getServer().getOnlinePlayers().size();
     }

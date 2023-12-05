@@ -2,3 +2,16 @@ name: mobBattle
 version: '${project.version}'
 main: org.dlds.mobbattle.MobBattle
 api-version: '1.20'
+commands:
+  setdistance:
+    description: Sets the distance from spawn.
+    usage: /<command> [newDistance]
+  settimer:
+    description: Sets the timer for scoreboard updates.
+    usage: /<command> [newTimer]
+  setspawncount:
+    description: Sets the number of spawn locations.
+    usage: /<command> [newSpawnCount]
+  startBattle:
+    description: Starts the battle.
+    usage: /<command>

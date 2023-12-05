@@ -13,7 +13,6 @@ public final class MobBattle extends JavaPlugin {
     private TimerHandler timerHandler;
 
 
-
     @Override
     public void onEnable() {
         Bukkit.getConsoleSender().sendMessage(Component.text("Welcome to Minecraft mobBattle!",
@@ -21,14 +20,15 @@ public final class MobBattle extends JavaPlugin {
         locationCalculator = new LocationCalculator();
         timerHandler = new TimerHandler();
 
+        // Create an instance of ClockInventory and register it as an event listener
+        ClockInventory clockInventory = new ClockInventory();
+        getServer().getPluginManager().registerEvents(clockInventory, this);
     }
 
     @Override
     public void onDisable() {
         // Plugin shutdown logic
     }
-
-
 
     public void startBattle() {
         World world = Bukkit.getServer().getWorlds().get(0); // Get the default world
@@ -37,8 +37,6 @@ public final class MobBattle extends JavaPlugin {
         locationCalculator.assignPlayerSpawns();
         timerHandler.setupScoreboardDisplay();
     }
-
-
 
 
     public boolean onCommand(@NotNull CommandSender sender, Command command, @NotNull String label, String[] args) {
