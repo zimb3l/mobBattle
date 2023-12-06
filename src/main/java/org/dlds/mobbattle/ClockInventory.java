@@ -1,11 +1,9 @@
 package org.dlds.mobbattle;
 
-import com.google.common.primitives.Ints;
 import net.kyori.adventure.text.Component;
 import net.kyori.adventure.text.format.NamedTextColor;
 import org.bukkit.Bukkit;
 import org.bukkit.Material;
-import org.bukkit.entity.Entity;
 import org.bukkit.entity.Player;
 import org.bukkit.event.EventHandler;
 import org.bukkit.event.Listener;
@@ -19,42 +17,18 @@ import java.util.*;
 
 public class ClockInventory implements Listener {
     private UUID uuid;
-    private int[] categoryPoints = new int[]{1, 3, 5, 10, 25, 50, 100, 150, 250};
-    private Map<Integer, List<MobCreature>> mobCreatures;
     private List<Category> categories;
+    private CategoryService categoryService = new CategoryService();
     private final Inventory inv;
+    private int currentPoints;
 
     public ClockInventory() {
         this.uuid = UUID.randomUUID();
 
         inv = Bukkit.createInventory(null, 63, Component.text("Points Showcase", NamedTextColor.GOLD));
 
-        initializeCategories();
-    }
-
-    private void initializeMobCreatureLists(){
-        // alle mobs initialisieren
-        List<MobCreature> one = new ArrayList<>();
-        one.add(new MobCreature());
-        one.add(new MobCreature());
-        one.add(new MobCreature());
-        mobCreatures.put(1, one);
-
-        List<MobCreature> two = new ArrayList<>();
-        two.add(new MobCreature());
-        two.add(new MobCreature());
-        two.add(new MobCreature());
-        mobCreatures.put(1, two);
-    }
-
-    private void initializeCategories(){
-        initializeMobCreatureLists();
-        for (int points: categoryPoints) {
-            int categoryNumber = Ints.indexOf(categoryPoints, points) + 1;
-            List<MobCreature> mobCreatureList = mobCreatures.get(categoryNumber);
-            Category category = new Category(categoryNumber, points, mobCreatureList);
-            categories.add(category);
-        }
+        this.categories = categoryService.initializeCategories();
+        this.currentPoints = 0;
     }
 
     @EventHandler

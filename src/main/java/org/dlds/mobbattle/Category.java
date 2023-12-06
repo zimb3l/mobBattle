@@ -1,5 +1,7 @@
 package org.dlds.mobbattle;
 
+import org.bukkit.inventory.ItemStack;
+
 import java.util.List;
 import java.util.UUID;
 
@@ -9,12 +11,16 @@ public class Category {
     private int categoryNumber;
     private int points;
     private List<MobCreature> mobs;
+    private List<ItemStack> mainRewards;
+    private List<ItemStack> luckyRewards;
 
-    public Category(int categoryNumber, int points, List<MobCreature> mobs){
+    public Category(int categoryNumber, int points, List<MobCreature> mobs, List<ItemStack> mainRewards, List<ItemStack> luckyRewards){
         this.id = UUID.randomUUID();
         this.categoryNumber = categoryNumber;
         this.points = points;
         this.mobs = mobs;
+        this.mainRewards = mainRewards;
+        this.luckyRewards = luckyRewards;
     }
 
     public UUID getId() {
@@ -31,5 +37,13 @@ public class Category {
 
     public List<MobCreature> getMobs() {
         return mobs;
+    }
+
+    public List<ItemStack> getMainRewards() {
+        return mainRewards;
+    }
+
+    public List<ItemStack> getLuckyRewards() {
+        return luckyRewards;
     }
 }
