@@ -107,6 +107,22 @@ public class CategoryService {
         categoryFiveLucky.add(new ItemStack(Material.NETHERITE_INGOT, 1));
         categoryFiveLucky.add(new ItemStack(Material.ENCHANTED_GOLDEN_APPLE, 1));
         luckyRewards.put(5, categoryFiveLucky);
+
+        List<ItemStack> categorySixLucky = new ArrayList<>();
+        categorySixLucky.add(new ItemStack(Material.GOLDEN_APPLE, 5));
+        luckyRewards.put(6, categorySixLucky);
+
+        List<ItemStack> categorySevenLucky = new ArrayList<>();
+        categorySevenLucky.add(new ItemStack(Material.GOLDEN_APPLE, 5));
+        luckyRewards.put(7, categorySevenLucky);
+
+        List<ItemStack> categoryEightLucky = new ArrayList<>();
+        categoryEightLucky.add(new ItemStack(Material.GOLDEN_APPLE, 5));
+        luckyRewards.put(8, categoryEightLucky);
+
+        List<ItemStack> categoryNineLucky = new ArrayList<>();
+        categoryNineLucky.add(new ItemStack(Material.GOLDEN_APPLE, 5));
+        luckyRewards.put(9, categoryNineLucky);
     }
 
     private void initializeMobLists(){
