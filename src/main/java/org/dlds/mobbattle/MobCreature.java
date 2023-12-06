@@ -7,9 +7,11 @@ public class MobCreature {
 
     private EntityType entityType;
     private String mobHead;
+    private String name;
     private boolean dead = false;
 
-    public MobCreature(EntityType entityType, String mobHead){
+    public MobCreature(String name, EntityType entityType, String mobHead){
+        this.name = name;
         this.entityType = entityType;
         this.mobHead = mobHead;
     }
@@ -24,6 +26,10 @@ public class MobCreature {
 
     public String getMobHead() {
         return mobHead;
+    }
+
+    public String getName() {
+        return name;
     }
 
     public boolean isDead() {
