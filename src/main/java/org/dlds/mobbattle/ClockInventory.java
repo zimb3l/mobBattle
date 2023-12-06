@@ -25,7 +25,7 @@ public class ClockInventory implements Listener {
     public ClockInventory() {
         this.uuid = UUID.randomUUID();
 
-        inv = Bukkit.createInventory(null, 63, Component.text("Points Showcase", NamedTextColor.GOLD));
+        inv = Bukkit.createInventory(null, 27, Component.text("Points Showcase", NamedTextColor.GOLD));
 
         this.categories = categoryService.initializeCategories();
         this.currentPoints = 0;

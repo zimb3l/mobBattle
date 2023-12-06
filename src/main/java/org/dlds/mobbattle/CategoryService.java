@@ -11,9 +11,9 @@ import java.util.List;
 import java.util.Map;
 
 public class CategoryService {
-    private Map<Integer, List<MobCreature>> mobs = new HashMap<>();
-    private Map<Integer, List<ItemStack>> mainRewards = new HashMap<>();
-    private Map<Integer, List<ItemStack>> luckyRewards = new HashMap<>();
+    private final Map<Integer, List<MobCreature>> mobs = new HashMap<>();
+    private final Map<Integer, List<ItemStack>> mainRewards = new HashMap<>();
+    private final Map<Integer, List<ItemStack>> luckyRewards = new HashMap<>();
     private final int[] categoryPoints = new int[]{1, 3, 5, 10, 25, 50, 100, 150, 250};
     private List<Category> categories = new ArrayList<>();
     public List<Category> initializeCategories(){
@@ -64,11 +64,14 @@ public class CategoryService {
         mainRewards.put(7, categorySevenMain);
 
         List<ItemStack> categoryEightMain = new ArrayList<>();
-        categoryEightMain.add(new ItemStack(Material.NETHERITE_INGOT, 1));
+        categoryEightMain.add(new ItemStack(Material.SHULKER_BOX, 1));
+        categorySevenMain.add(new ItemStack(Material.NETHERITE_INGOT, 2));
         mainRewards.put(8, categoryEightMain);
 
         List<ItemStack> categoryNineMain = new ArrayList<>();
-        categoryNineMain.add(new ItemStack(Material.NETHERITE_INGOT, 1));
+        categoryNineMain.add(new ItemStack(Material.NETHERITE_UPGRADE_SMITHING_TEMPLATE, 1));
+        categoryNineMain.add(new ItemStack(Material.ENCHANTED_GOLDEN_APPLE, 2));
+        categorySevenMain.add(new ItemStack(Material.NETHERITE_INGOT, 1));
         mainRewards.put(9, categoryNineMain);
     }
 
@@ -97,11 +100,11 @@ public class CategoryService {
 
     private void initializeMobLists(){
         List<MobCreature> categoryOne = new ArrayList<>();
-        categoryOne.add(new MobCreature(EntityType.COW, ""));
-        categoryOne.add(new MobCreature(EntityType.SHEEP, ""));
-        categoryOne.add(new MobCreature(EntityType.PIG, ""));
-        categoryOne.add(new MobCreature(EntityType.CHICKEN, ""));
-        categoryOne.add(new MobCreature(EntityType.SQUID, ""));
+        categoryOne.add(new MobCreature(EntityType.COW,     "eyJ0ZXh0dXJlcyI6eyJTS0lOIjp7InVybCI6Imh0dHA6Ly90ZXh0dXJlcy5taW5lY3JhZnQubmV0L3RleHR1cmUvZDY1NTE4NDA5NTVmNTI0MzY3NTgwZjExYjM1MjI4OTM4YjY3ODYzOTdhOGYyZThjOGNjNmIwZWIwMWI1ZGIzZCJ9fX0="));
+        categoryOne.add(new MobCreature(EntityType.SHEEP,   "eyJ0ZXh0dXJlcyI6eyJTS0lOIjp7InVybCI6Imh0dHA6Ly90ZXh0dXJlcy5taW5lY3JhZnQubmV0L3RleHR1cmUvMzBmNTAzOTRjNmQ3ZGJjMDNlYTU5ZmRmNTA0MDIwZGM1ZDY1NDhmOWQzYmM5ZGNhYzg5NmJiNWNhMDg1ODdhIn19fQ=="));
+        categoryOne.add(new MobCreature(EntityType.PIG,     "eyJ0ZXh0dXJlcyI6eyJTS0lOIjp7InVybCI6Imh0dHA6Ly90ZXh0dXJlcy5taW5lY3JhZnQubmV0L3RleHR1cmUvYmVlODUxNDg5MmYzZDc4YTMyZTg0NTZmY2JiOGM2MDgxZTIxYjI0NmQ4MmYzOThiZDk2OWZlYzE5ZDNjMjdiMyJ9fX0="));
+        categoryOne.add(new MobCreature(EntityType.CHICKEN, "eyJ0ZXh0dXJlcyI6eyJTS0lOIjp7InVybCI6Imh0dHA6Ly90ZXh0dXJlcy5taW5lY3JhZnQubmV0L3RleHR1cmUvMTYzODQ2OWE1OTljZWVmNzIwNzUzNzYwMzI0OGE5YWIxMWZmNTkxZmQzNzhiZWE0NzM1YjM0NmE3ZmFlODkzIn19fQ=="));
+        categoryOne.add(new MobCreature(EntityType.SQUID,   "eyJ0ZXh0dXJlcyI6eyJTS0lOIjp7InVybCI6Imh0dHA6Ly90ZXh0dXJlcy5taW5lY3JhZnQubmV0L3RleHR1cmUvNDY0YmRjNmY2MDA2NTY1MTFiZWY1OTZjMWExNmFhYjFkM2Y1ZGJhYWU4YmVlMTlkNWMwNGRlMGRiMjFjZTkyYyJ9fX0="));
         mobs.put(1, categoryOne);
 
         List<MobCreature> categoryTwo = new ArrayList<>();
