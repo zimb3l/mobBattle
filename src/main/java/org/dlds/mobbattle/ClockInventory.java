@@ -16,6 +16,10 @@ import org.bukkit.inventory.Inventory;
 import org.bukkit.inventory.ItemStack;
 import org.bukkit.inventory.meta.ItemMeta;
 import org.bukkit.inventory.meta.SkullMeta;
+import com.destroystokyo.paper.profile.PlayerProfile;
+import com.destroystokyo.paper.profile.ProfileProperty;
+
+import java.util.UUID;
 
 import java.util.*;
 
@@ -26,11 +30,36 @@ public class ClockInventory implements Listener {
     private Map<Integer, Inventory> pages = new HashMap<>();
     private int currentPoints = 0;
     private int currentPage = 0;
-    private final int pageSize = 27;
+    private final int pageSize = 54;
 
     public ClockInventory() {
         this.categories = categoryService.initializeCategories();
         initializePages();
+    }
+
+    public Category getCategoryForEntityType(EntityType entityType){
+        for (Category category: categories) {
+            for (MobCreature mobCreature: category.getMobs()) {
+                if(mobCreature.getEntityType().equals(entityType)){
+                    return category;
+                }
+            }
+        }
+        return null;
+    }
+    public int getCurrentPoints() {
+        return currentPoints;
+    }
+    public ItemStack getCustomSkull(String base64) {
+        ItemStack skull = new ItemStack(Material.PLAYER_HEAD);
+        SkullMeta skullMeta = (SkullMeta) skull.getItemMeta();
+
+        PlayerProfile profile = Bukkit.createProfile(UUID.randomUUID());
+        profile.getProperties().add(new ProfileProperty("textures", base64));
+        skullMeta.setPlayerProfile(profile);
+
+        skull.setItemMeta(skullMeta);
+        return skull;
     }
 
     private void initializePages(){
@@ -48,15 +77,22 @@ public class ClockInventory implements Listener {
 
     private void initializeCategoryPage(Inventory page, Category category) {
         for (MobCreature mob : category.getMobs()) {
-            ItemStack mobHead = new ItemStack(Material.PLAYER_HEAD);
+            ItemStack mobHead;
+            System.out.println("initializeCategoryPage mobName: " + mob.getName() +  ", mobHeadString: " + mob.getMobHead());
+            if(mob.getMobHead() != null && !mob.getMobHead().isEmpty()){
+                mobHead = getCustomSkull(mob.getMobHead());
+            } else {
+                mobHead = new ItemStack(Material.PLAYER_HEAD);
+            }
+
             SkullMeta meta = (SkullMeta) mobHead.getItemMeta();
-            meta.setOwningPlayer(Bukkit.getOfflinePlayer(mob.getMobHead()));
             meta.displayName(Component.text(mob.getName(), NamedTextColor.GREEN));
 
             if (killedMobs.contains(mob)) {
                 mobHead.addUnsafeEnchantment(Enchantment.LUCK, 1);
             }
 
+            mobHead.setItemMeta(meta);
             page.addItem(mobHead);
         }
 

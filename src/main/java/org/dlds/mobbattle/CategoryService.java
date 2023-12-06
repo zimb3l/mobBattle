@@ -31,17 +31,6 @@ public class CategoryService {
         return categories;
     }
 
-    public Category getCategoryForEntityType(EntityType entityType){
-        for (Category category: categories) {
-            for (MobCreature mobCreature: category.getMobs()) {
-                if(mobCreature.getEntityType().equals(entityType)){
-                    return category;
-                }
-            }
-        }
-        return null;
-    }
-
     private void initializeMainRewardLists(){
         List<ItemStack> categoryOneMain = new ArrayList<>();
         categoryOneMain.add(new ItemStack(Material.IRON_INGOT, 1));
@@ -76,13 +65,13 @@ public class CategoryService {
 
         List<ItemStack> categoryEightMain = new ArrayList<>();
         categoryEightMain.add(new ItemStack(Material.SHULKER_BOX, 1));
-        categorySevenMain.add(new ItemStack(Material.NETHERITE_INGOT, 2));
+        categoryEightMain.add(new ItemStack(Material.NETHERITE_INGOT, 2));
         mainRewards.put(8, categoryEightMain);
 
         List<ItemStack> categoryNineMain = new ArrayList<>();
         categoryNineMain.add(new ItemStack(Material.NETHERITE_UPGRADE_SMITHING_TEMPLATE, 1));
         categoryNineMain.add(new ItemStack(Material.ENCHANTED_GOLDEN_APPLE, 2));
-        categorySevenMain.add(new ItemStack(Material.NETHERITE_INGOT, 1));
+        categoryNineMain.add(new ItemStack(Material.NETHERITE_INGOT, 1));
         mainRewards.put(9, categoryNineMain);
     }
 
@@ -135,94 +124,94 @@ public class CategoryService {
         mobs.put(1, categoryOne);
 
         List<MobCreature> categoryTwo = new ArrayList<>();
-        categoryTwo.add(new MobCreature("Zombie", EntityType.ZOMBIE, ""));
-        categoryTwo.add(new MobCreature("Horse", EntityType.HORSE, ""));
-        categoryTwo.add(new MobCreature("Donkey", EntityType.DONKEY, ""));
-        categoryTwo.add(new MobCreature("Creeper", EntityType.CREEPER, ""));
-        categoryTwo.add(new MobCreature("Skeleton", EntityType.SKELETON, ""));
-        categoryTwo.add(new MobCreature("Villager", EntityType.VILLAGER, ""));
-        categoryTwo.add(new MobCreature("Wandering Trader", EntityType.WANDERING_TRADER, ""));
-        categoryTwo.add(new MobCreature("Wolf", EntityType.WOLF, ""));
-        categoryTwo.add(new MobCreature("Cat", EntityType.CAT, ""));
-        categoryTwo.add(new MobCreature("Slime", EntityType.SLIME, ""));
-        categoryTwo.add(new MobCreature("Drowned", EntityType.DROWNED, ""));
-        categoryTwo.add(new MobCreature("Spider", EntityType.SPIDER, ""));
-        categoryTwo.add(new MobCreature("Silverfish", EntityType.SILVERFISH, ""));
-        categoryTwo.add(new MobCreature("Bat", EntityType.BAT, ""));
+        categoryTwo.add(new MobCreature("Zombie", EntityType.ZOMBIE, "eyJ0ZXh0dXJlcyI6eyJTS0lOIjp7InVybCI6Imh0dHA6Ly90ZXh0dXJlcy5taW5lY3JhZnQubmV0L3RleHR1cmUvZDY1NTE4NDA5NTVmNTI0MzY3NTgwZjExYjM1MjI4OTM4YjY3ODYzOTdhOGYyZThjOGNjNmIwZWIwMWI1ZGIzZCJ9fX0="));
+        categoryTwo.add(new MobCreature("Horse", EntityType.HORSE, "eyJ0ZXh0dXJlcyI6eyJTS0lOIjp7InVybCI6Imh0dHA6Ly90ZXh0dXJlcy5taW5lY3JhZnQubmV0L3RleHR1cmUvZDY1NTE4NDA5NTVmNTI0MzY3NTgwZjExYjM1MjI4OTM4YjY3ODYzOTdhOGYyZThjOGNjNmIwZWIwMWI1ZGIzZCJ9fX0="));
+        categoryTwo.add(new MobCreature("Donkey", EntityType.DONKEY, "eyJ0ZXh0dXJlcyI6eyJTS0lOIjp7InVybCI6Imh0dHA6Ly90ZXh0dXJlcy5taW5lY3JhZnQubmV0L3RleHR1cmUvZDY1NTE4NDA5NTVmNTI0MzY3NTgwZjExYjM1MjI4OTM4YjY3ODYzOTdhOGYyZThjOGNjNmIwZWIwMWI1ZGIzZCJ9fX0="));
+        categoryTwo.add(new MobCreature("Creeper", EntityType.CREEPER, "eyJ0ZXh0dXJlcyI6eyJTS0lOIjp7InVybCI6Imh0dHA6Ly90ZXh0dXJlcy5taW5lY3JhZnQubmV0L3RleHR1cmUvZDY1NTE4NDA5NTVmNTI0MzY3NTgwZjExYjM1MjI4OTM4YjY3ODYzOTdhOGYyZThjOGNjNmIwZWIwMWI1ZGIzZCJ9fX0="));
+        categoryTwo.add(new MobCreature("Skeleton", EntityType.SKELETON, "eyJ0ZXh0dXJlcyI6eyJTS0lOIjp7InVybCI6Imh0dHA6Ly90ZXh0dXJlcy5taW5lY3JhZnQubmV0L3RleHR1cmUvZDY1NTE4NDA5NTVmNTI0MzY3NTgwZjExYjM1MjI4OTM4YjY3ODYzOTdhOGYyZThjOGNjNmIwZWIwMWI1ZGIzZCJ9fX0="));
+        categoryTwo.add(new MobCreature("Villager", EntityType.VILLAGER, "eyJ0ZXh0dXJlcyI6eyJTS0lOIjp7InVybCI6Imh0dHA6Ly90ZXh0dXJlcy5taW5lY3JhZnQubmV0L3RleHR1cmUvZDY1NTE4NDA5NTVmNTI0MzY3NTgwZjExYjM1MjI4OTM4YjY3ODYzOTdhOGYyZThjOGNjNmIwZWIwMWI1ZGIzZCJ9fX0="));
+        categoryTwo.add(new MobCreature("Wandering Trader", EntityType.WANDERING_TRADER, "eyJ0ZXh0dXJlcyI6eyJTS0lOIjp7InVybCI6Imh0dHA6Ly90ZXh0dXJlcy5taW5lY3JhZnQubmV0L3RleHR1cmUvZDY1NTE4NDA5NTVmNTI0MzY3NTgwZjExYjM1MjI4OTM4YjY3ODYzOTdhOGYyZThjOGNjNmIwZWIwMWI1ZGIzZCJ9fX0="));
+        categoryTwo.add(new MobCreature("Wolf", EntityType.WOLF, "eyJ0ZXh0dXJlcyI6eyJTS0lOIjp7InVybCI6Imh0dHA6Ly90ZXh0dXJlcy5taW5lY3JhZnQubmV0L3RleHR1cmUvZDY1NTE4NDA5NTVmNTI0MzY3NTgwZjExYjM1MjI4OTM4YjY3ODYzOTdhOGYyZThjOGNjNmIwZWIwMWI1ZGIzZCJ9fX0="));
+        categoryTwo.add(new MobCreature("Cat", EntityType.CAT, "eyJ0ZXh0dXJlcyI6eyJTS0lOIjp7InVybCI6Imh0dHA6Ly90ZXh0dXJlcy5taW5lY3JhZnQubmV0L3RleHR1cmUvZDY1NTE4NDA5NTVmNTI0MzY3NTgwZjExYjM1MjI4OTM4YjY3ODYzOTdhOGYyZThjOGNjNmIwZWIwMWI1ZGIzZCJ9fX0="));
+        categoryTwo.add(new MobCreature("Slime", EntityType.SLIME, "eyJ0ZXh0dXJlcyI6eyJTS0lOIjp7InVybCI6Imh0dHA6Ly90ZXh0dXJlcy5taW5lY3JhZnQubmV0L3RleHR1cmUvZDY1NTE4NDA5NTVmNTI0MzY3NTgwZjExYjM1MjI4OTM4YjY3ODYzOTdhOGYyZThjOGNjNmIwZWIwMWI1ZGIzZCJ9fX0="));
+        categoryTwo.add(new MobCreature("Drowned", EntityType.DROWNED, "eyJ0ZXh0dXJlcyI6eyJTS0lOIjp7InVybCI6Imh0dHA6Ly90ZXh0dXJlcy5taW5lY3JhZnQubmV0L3RleHR1cmUvZDY1NTE4NDA5NTVmNTI0MzY3NTgwZjExYjM1MjI4OTM4YjY3ODYzOTdhOGYyZThjOGNjNmIwZWIwMWI1ZGIzZCJ9fX0="));
+        categoryTwo.add(new MobCreature("Spider", EntityType.SPIDER, "eyJ0ZXh0dXJlcyI6eyJTS0lOIjp7InVybCI6Imh0dHA6Ly90ZXh0dXJlcy5taW5lY3JhZnQubmV0L3RleHR1cmUvZDY1NTE4NDA5NTVmNTI0MzY3NTgwZjExYjM1MjI4OTM4YjY3ODYzOTdhOGYyZThjOGNjNmIwZWIwMWI1ZGIzZCJ9fX0="));
+        categoryTwo.add(new MobCreature("Silverfish", EntityType.SILVERFISH, "eyJ0ZXh0dXJlcyI6eyJTS0lOIjp7InVybCI6Imh0dHA6Ly90ZXh0dXJlcy5taW5lY3JhZnQubmV0L3RleHR1cmUvZDY1NTE4NDA5NTVmNTI0MzY3NTgwZjExYjM1MjI4OTM4YjY3ODYzOTdhOGYyZThjOGNjNmIwZWIwMWI1ZGIzZCJ9fX0="));
+        categoryTwo.add(new MobCreature("Bat", EntityType.BAT, "eyJ0ZXh0dXJlcyI6eyJTS0lOIjp7InVybCI6Imh0dHA6Ly90ZXh0dXJlcy5taW5lY3JhZnQubmV0L3RleHR1cmUvZDY1NTE4NDA5NTVmNTI0MzY3NTgwZjExYjM1MjI4OTM4YjY3ODYzOTdhOGYyZThjOGNjNmIwZWIwMWI1ZGIzZCJ9fX0="));
         mobs.put(2, categoryTwo);
 
         List<MobCreature> categoryThree = new ArrayList<>();
-        categoryThree.add(new MobCreature("Axolotl", EntityType.AXOLOTL, ""));
-        categoryThree.add(new MobCreature("Cave Spider", EntityType.CAVE_SPIDER, ""));
-        categoryThree.add(new MobCreature("Bee", EntityType.BEE, ""));
-        categoryThree.add(new MobCreature("Glow Squid", EntityType.GLOW_SQUID, ""));
-        categoryThree.add(new MobCreature("Rabbit", EntityType.RABBIT, ""));
-        categoryThree.add(new MobCreature("Goat", EntityType.GOAT, ""));
-        categoryThree.add(new MobCreature("Fox", EntityType.FOX, ""));
-        categoryThree.add(new MobCreature("Parrot", EntityType.PARROT, ""));
-        categoryThree.add(new MobCreature("Snow Golem", EntityType.SNOWMAN, ""));
-        categoryThree.add(new MobCreature("Turtle", EntityType.TURTLE, ""));
-        categoryThree.add(new MobCreature("Husk", EntityType.HUSK, ""));
-        categoryThree.add(new MobCreature("Witch", EntityType.WITCH, ""));
-        categoryThree.add(new MobCreature("Zombie Villager", EntityType.ZOMBIE_VILLAGER, ""));
+        categoryThree.add(new MobCreature("Axolotl", EntityType.AXOLOTL, "eyJ0ZXh0dXJlcyI6eyJTS0lOIjp7InVybCI6Imh0dHA6Ly90ZXh0dXJlcy5taW5lY3JhZnQubmV0L3RleHR1cmUvZDY1NTE4NDA5NTVmNTI0MzY3NTgwZjExYjM1MjI4OTM4YjY3ODYzOTdhOGYyZThjOGNjNmIwZWIwMWI1ZGIzZCJ9fX0="));
+        categoryThree.add(new MobCreature("Cave Spider", EntityType.CAVE_SPIDER, "eyJ0ZXh0dXJlcyI6eyJTS0lOIjp7InVybCI6Imh0dHA6Ly90ZXh0dXJlcy5taW5lY3JhZnQubmV0L3RleHR1cmUvZDY1NTE4NDA5NTVmNTI0MzY3NTgwZjExYjM1MjI4OTM4YjY3ODYzOTdhOGYyZThjOGNjNmIwZWIwMWI1ZGIzZCJ9fX0="));
+        categoryThree.add(new MobCreature("Bee", EntityType.BEE, "eyJ0ZXh0dXJlcyI6eyJTS0lOIjp7InVybCI6Imh0dHA6Ly90ZXh0dXJlcy5taW5lY3JhZnQubmV0L3RleHR1cmUvZDY1NTE4NDA5NTVmNTI0MzY3NTgwZjExYjM1MjI4OTM4YjY3ODYzOTdhOGYyZThjOGNjNmIwZWIwMWI1ZGIzZCJ9fX0="));
+        categoryThree.add(new MobCreature("Glow Squid", EntityType.GLOW_SQUID, "eyJ0ZXh0dXJlcyI6eyJTS0lOIjp7InVybCI6Imh0dHA6Ly90ZXh0dXJlcy5taW5lY3JhZnQubmV0L3RleHR1cmUvZDY1NTE4NDA5NTVmNTI0MzY3NTgwZjExYjM1MjI4OTM4YjY3ODYzOTdhOGYyZThjOGNjNmIwZWIwMWI1ZGIzZCJ9fX0="));
+        categoryThree.add(new MobCreature("Rabbit", EntityType.RABBIT, "eyJ0ZXh0dXJlcyI6eyJTS0lOIjp7InVybCI6Imh0dHA6Ly90ZXh0dXJlcy5taW5lY3JhZnQubmV0L3RleHR1cmUvZDY1NTE4NDA5NTVmNTI0MzY3NTgwZjExYjM1MjI4OTM4YjY3ODYzOTdhOGYyZThjOGNjNmIwZWIwMWI1ZGIzZCJ9fX0="));
+        categoryThree.add(new MobCreature("Goat", EntityType.GOAT, "eyJ0ZXh0dXJlcyI6eyJTS0lOIjp7InVybCI6Imh0dHA6Ly90ZXh0dXJlcy5taW5lY3JhZnQubmV0L3RleHR1cmUvZDY1NTE4NDA5NTVmNTI0MzY3NTgwZjExYjM1MjI4OTM4YjY3ODYzOTdhOGYyZThjOGNjNmIwZWIwMWI1ZGIzZCJ9fX0="));
+        categoryThree.add(new MobCreature("Fox", EntityType.FOX, "eyJ0ZXh0dXJlcyI6eyJTS0lOIjp7InVybCI6Imh0dHA6Ly90ZXh0dXJlcy5taW5lY3JhZnQubmV0L3RleHR1cmUvZDY1NTE4NDA5NTVmNTI0MzY3NTgwZjExYjM1MjI4OTM4YjY3ODYzOTdhOGYyZThjOGNjNmIwZWIwMWI1ZGIzZCJ9fX0="));
+        categoryThree.add(new MobCreature("Parrot", EntityType.PARROT, "eyJ0ZXh0dXJlcyI6eyJTS0lOIjp7InVybCI6Imh0dHA6Ly90ZXh0dXJlcy5taW5lY3JhZnQubmV0L3RleHR1cmUvZDY1NTE4NDA5NTVmNTI0MzY3NTgwZjExYjM1MjI4OTM4YjY3ODYzOTdhOGYyZThjOGNjNmIwZWIwMWI1ZGIzZCJ9fX0="));
+        categoryThree.add(new MobCreature("Snow Golem", EntityType.SNOWMAN, "eyJ0ZXh0dXJlcyI6eyJTS0lOIjp7InVybCI6Imh0dHA6Ly90ZXh0dXJlcy5taW5lY3JhZnQubmV0L3RleHR1cmUvZDY1NTE4NDA5NTVmNTI0MzY3NTgwZjExYjM1MjI4OTM4YjY3ODYzOTdhOGYyZThjOGNjNmIwZWIwMWI1ZGIzZCJ9fX0="));
+        categoryThree.add(new MobCreature("Turtle", EntityType.TURTLE, "eyJ0ZXh0dXJlcyI6eyJTS0lOIjp7InVybCI6Imh0dHA6Ly90ZXh0dXJlcy5taW5lY3JhZnQubmV0L3RleHR1cmUvZDY1NTE4NDA5NTVmNTI0MzY3NTgwZjExYjM1MjI4OTM4YjY3ODYzOTdhOGYyZThjOGNjNmIwZWIwMWI1ZGIzZCJ9fX0="));
+        categoryThree.add(new MobCreature("Husk", EntityType.HUSK, "eyJ0ZXh0dXJlcyI6eyJTS0lOIjp7InVybCI6Imh0dHA6Ly90ZXh0dXJlcy5taW5lY3JhZnQubmV0L3RleHR1cmUvZDY1NTE4NDA5NTVmNTI0MzY3NTgwZjExYjM1MjI4OTM4YjY3ODYzOTdhOGYyZThjOGNjNmIwZWIwMWI1ZGIzZCJ9fX0="));
+        categoryThree.add(new MobCreature("Witch", EntityType.WITCH, "eyJ0ZXh0dXJlcyI6eyJTS0lOIjp7InVybCI6Imh0dHA6Ly90ZXh0dXJlcy5taW5lY3JhZnQubmV0L3RleHR1cmUvZDY1NTE4NDA5NTVmNTI0MzY3NTgwZjExYjM1MjI4OTM4YjY3ODYzOTdhOGYyZThjOGNjNmIwZWIwMWI1ZGIzZCJ9fX0="));
+        categoryThree.add(new MobCreature("Zombie Villager", EntityType.ZOMBIE_VILLAGER, "eyJ0ZXh0dXJlcyI6eyJTS0lOIjp7InVybCI6Imh0dHA6Ly90ZXh0dXJlcy5taW5lY3JhZnQubmV0L3RleHR1cmUvZDY1NTE4NDA5NTVmNTI0MzY3NTgwZjExYjM1MjI4OTM4YjY3ODYzOTdhOGYyZThjOGNjNmIwZWIwMWI1ZGIzZCJ9fX0="));
         mobs.put(3, categoryThree);
 
         List<MobCreature> categoryFour = new ArrayList<>();
-        categoryFour.add(new MobCreature("Mule", EntityType.MULE, ""));
-        categoryFour.add(new MobCreature("Frog", EntityType.FROG, ""));
-        categoryFour.add(new MobCreature("Strider", EntityType.STRIDER, ""));
-        categoryFour.add(new MobCreature("Ocelot", EntityType.OCELOT, ""));
-        categoryFour.add(new MobCreature("Camel", EntityType.CAMEL, ""));
-        categoryFour.add(new MobCreature("LLama", EntityType.LLAMA, ""));
-        categoryFour.add(new MobCreature("Enderman", EntityType.ENDERMAN, ""));
-        categoryFour.add(new MobCreature("Iron Golem", EntityType.IRON_GOLEM, ""));
-        categoryFour.add(new MobCreature("Panda", EntityType.PANDA, ""));
-        categoryFour.add(new MobCreature("Guardian", EntityType.GUARDIAN, ""));
-        categoryFour.add(new MobCreature("Endermite", EntityType.ENDERMITE, ""));
-        categoryFour.add(new MobCreature("Ghast", EntityType.GHAST, ""));
-        categoryFour.add(new MobCreature("Hoglin", EntityType.HOGLIN, ""));
-        categoryFour.add(new MobCreature("Phantom", EntityType.PHANTOM, ""));
-        categoryFour.add(new MobCreature("Pillager", EntityType.PILLAGER, ""));
-        categoryFour.add(new MobCreature("Stray", EntityType.STRAY, ""));
-        categoryFour.add(new MobCreature("Vex", EntityType.VEX, ""));
-        categoryFour.add(new MobCreature("Vindicator", EntityType.VINDICATOR, ""));
-        categoryFour.add(new MobCreature("Wither Skeleton", EntityType.WITHER_SKELETON, ""));
-        categoryFour.add(new MobCreature("Zoglin", EntityType.ZOGLIN, ""));
+        categoryFour.add(new MobCreature("Mule", EntityType.MULE, "eyJ0ZXh0dXJlcyI6eyJTS0lOIjp7InVybCI6Imh0dHA6Ly90ZXh0dXJlcy5taW5lY3JhZnQubmV0L3RleHR1cmUvZDY1NTE4NDA5NTVmNTI0MzY3NTgwZjExYjM1MjI4OTM4YjY3ODYzOTdhOGYyZThjOGNjNmIwZWIwMWI1ZGIzZCJ9fX0="));
+        categoryFour.add(new MobCreature("Frog", EntityType.FROG, "eyJ0ZXh0dXJlcyI6eyJTS0lOIjp7InVybCI6Imh0dHA6Ly90ZXh0dXJlcy5taW5lY3JhZnQubmV0L3RleHR1cmUvZDY1NTE4NDA5NTVmNTI0MzY3NTgwZjExYjM1MjI4OTM4YjY3ODYzOTdhOGYyZThjOGNjNmIwZWIwMWI1ZGIzZCJ9fX0="));
+        categoryFour.add(new MobCreature("Strider", EntityType.STRIDER, "eyJ0ZXh0dXJlcyI6eyJTS0lOIjp7InVybCI6Imh0dHA6Ly90ZXh0dXJlcy5taW5lY3JhZnQubmV0L3RleHR1cmUvZDY1NTE4NDA5NTVmNTI0MzY3NTgwZjExYjM1MjI4OTM4YjY3ODYzOTdhOGYyZThjOGNjNmIwZWIwMWI1ZGIzZCJ9fX0="));
+        categoryFour.add(new MobCreature("Ocelot", EntityType.OCELOT, "eyJ0ZXh0dXJlcyI6eyJTS0lOIjp7InVybCI6Imh0dHA6Ly90ZXh0dXJlcy5taW5lY3JhZnQubmV0L3RleHR1cmUvZDY1NTE4NDA5NTVmNTI0MzY3NTgwZjExYjM1MjI4OTM4YjY3ODYzOTdhOGYyZThjOGNjNmIwZWIwMWI1ZGIzZCJ9fX0="));
+        categoryFour.add(new MobCreature("Camel", EntityType.CAMEL, "eyJ0ZXh0dXJlcyI6eyJTS0lOIjp7InVybCI6Imh0dHA6Ly90ZXh0dXJlcy5taW5lY3JhZnQubmV0L3RleHR1cmUvZDY1NTE4NDA5NTVmNTI0MzY3NTgwZjExYjM1MjI4OTM4YjY3ODYzOTdhOGYyZThjOGNjNmIwZWIwMWI1ZGIzZCJ9fX0="));
+        categoryFour.add(new MobCreature("LLama", EntityType.LLAMA, "eyJ0ZXh0dXJlcyI6eyJTS0lOIjp7InVybCI6Imh0dHA6Ly90ZXh0dXJlcy5taW5lY3JhZnQubmV0L3RleHR1cmUvZDY1NTE4NDA5NTVmNTI0MzY3NTgwZjExYjM1MjI4OTM4YjY3ODYzOTdhOGYyZThjOGNjNmIwZWIwMWI1ZGIzZCJ9fX0="));
+        categoryFour.add(new MobCreature("Enderman", EntityType.ENDERMAN, "eyJ0ZXh0dXJlcyI6eyJTS0lOIjp7InVybCI6Imh0dHA6Ly90ZXh0dXJlcy5taW5lY3JhZnQubmV0L3RleHR1cmUvZDY1NTE4NDA5NTVmNTI0MzY3NTgwZjExYjM1MjI4OTM4YjY3ODYzOTdhOGYyZThjOGNjNmIwZWIwMWI1ZGIzZCJ9fX0="));
+        categoryFour.add(new MobCreature("Iron Golem", EntityType.IRON_GOLEM, "eyJ0ZXh0dXJlcyI6eyJTS0lOIjp7InVybCI6Imh0dHA6Ly90ZXh0dXJlcy5taW5lY3JhZnQubmV0L3RleHR1cmUvZDY1NTE4NDA5NTVmNTI0MzY3NTgwZjExYjM1MjI4OTM4YjY3ODYzOTdhOGYyZThjOGNjNmIwZWIwMWI1ZGIzZCJ9fX0="));
+        categoryFour.add(new MobCreature("Panda", EntityType.PANDA, "eyJ0ZXh0dXJlcyI6eyJTS0lOIjp7InVybCI6Imh0dHA6Ly90ZXh0dXJlcy5taW5lY3JhZnQubmV0L3RleHR1cmUvZDY1NTE4NDA5NTVmNTI0MzY3NTgwZjExYjM1MjI4OTM4YjY3ODYzOTdhOGYyZThjOGNjNmIwZWIwMWI1ZGIzZCJ9fX0="));
+        categoryFour.add(new MobCreature("Guardian", EntityType.GUARDIAN, "eyJ0ZXh0dXJlcyI6eyJTS0lOIjp7InVybCI6Imh0dHA6Ly90ZXh0dXJlcy5taW5lY3JhZnQubmV0L3RleHR1cmUvZDY1NTE4NDA5NTVmNTI0MzY3NTgwZjExYjM1MjI4OTM4YjY3ODYzOTdhOGYyZThjOGNjNmIwZWIwMWI1ZGIzZCJ9fX0="));
+        categoryFour.add(new MobCreature("Endermite", EntityType.ENDERMITE, "eyJ0ZXh0dXJlcyI6eyJTS0lOIjp7InVybCI6Imh0dHA6Ly90ZXh0dXJlcy5taW5lY3JhZnQubmV0L3RleHR1cmUvZDY1NTE4NDA5NTVmNTI0MzY3NTgwZjExYjM1MjI4OTM4YjY3ODYzOTdhOGYyZThjOGNjNmIwZWIwMWI1ZGIzZCJ9fX0="));
+        categoryFour.add(new MobCreature("Ghast", EntityType.GHAST, "eyJ0ZXh0dXJlcyI6eyJTS0lOIjp7InVybCI6Imh0dHA6Ly90ZXh0dXJlcy5taW5lY3JhZnQubmV0L3RleHR1cmUvZDY1NTE4NDA5NTVmNTI0MzY3NTgwZjExYjM1MjI4OTM4YjY3ODYzOTdhOGYyZThjOGNjNmIwZWIwMWI1ZGIzZCJ9fX0="));
+        categoryFour.add(new MobCreature("Hoglin", EntityType.HOGLIN, "eyJ0ZXh0dXJlcyI6eyJTS0lOIjp7InVybCI6Imh0dHA6Ly90ZXh0dXJlcy5taW5lY3JhZnQubmV0L3RleHR1cmUvZDY1NTE4NDA5NTVmNTI0MzY3NTgwZjExYjM1MjI4OTM4YjY3ODYzOTdhOGYyZThjOGNjNmIwZWIwMWI1ZGIzZCJ9fX0="));
+        categoryFour.add(new MobCreature("Phantom", EntityType.PHANTOM, "eyJ0ZXh0dXJlcyI6eyJTS0lOIjp7InVybCI6Imh0dHA6Ly90ZXh0dXJlcy5taW5lY3JhZnQubmV0L3RleHR1cmUvZDY1NTE4NDA5NTVmNTI0MzY3NTgwZjExYjM1MjI4OTM4YjY3ODYzOTdhOGYyZThjOGNjNmIwZWIwMWI1ZGIzZCJ9fX0="));
+        categoryFour.add(new MobCreature("Pillager", EntityType.PILLAGER, "eyJ0ZXh0dXJlcyI6eyJTS0lOIjp7InVybCI6Imh0dHA6Ly90ZXh0dXJlcy5taW5lY3JhZnQubmV0L3RleHR1cmUvZDY1NTE4NDA5NTVmNTI0MzY3NTgwZjExYjM1MjI4OTM4YjY3ODYzOTdhOGYyZThjOGNjNmIwZWIwMWI1ZGIzZCJ9fX0="));
+        categoryFour.add(new MobCreature("Stray", EntityType.STRAY, "eyJ0ZXh0dXJlcyI6eyJTS0lOIjp7InVybCI6Imh0dHA6Ly90ZXh0dXJlcy5taW5lY3JhZnQubmV0L3RleHR1cmUvZDY1NTE4NDA5NTVmNTI0MzY3NTgwZjExYjM1MjI4OTM4YjY3ODYzOTdhOGYyZThjOGNjNmIwZWIwMWI1ZGIzZCJ9fX0="));
+        categoryFour.add(new MobCreature("Vex", EntityType.VEX, "eyJ0ZXh0dXJlcyI6eyJTS0lOIjp7InVybCI6Imh0dHA6Ly90ZXh0dXJlcy5taW5lY3JhZnQubmV0L3RleHR1cmUvZDY1NTE4NDA5NTVmNTI0MzY3NTgwZjExYjM1MjI4OTM4YjY3ODYzOTdhOGYyZThjOGNjNmIwZWIwMWI1ZGIzZCJ9fX0="));
+        categoryFour.add(new MobCreature("Vindicator", EntityType.VINDICATOR, "eyJ0ZXh0dXJlcyI6eyJTS0lOIjp7InVybCI6Imh0dHA6Ly90ZXh0dXJlcy5taW5lY3JhZnQubmV0L3RleHR1cmUvZDY1NTE4NDA5NTVmNTI0MzY3NTgwZjExYjM1MjI4OTM4YjY3ODYzOTdhOGYyZThjOGNjNmIwZWIwMWI1ZGIzZCJ9fX0="));
+        categoryFour.add(new MobCreature("Wither Skeleton", EntityType.WITHER_SKELETON, "eyJ0ZXh0dXJlcyI6eyJTS0lOIjp7InVybCI6Imh0dHA6Ly90ZXh0dXJlcy5taW5lY3JhZnQubmV0L3RleHR1cmUvZDY1NTE4NDA5NTVmNTI0MzY3NTgwZjExYjM1MjI4OTM4YjY3ODYzOTdhOGYyZThjOGNjNmIwZWIwMWI1ZGIzZCJ9fX0="));
+        categoryFour.add(new MobCreature("Zoglin", EntityType.ZOGLIN, "eyJ0ZXh0dXJlcyI6eyJTS0lOIjp7InVybCI6Imh0dHA6Ly90ZXh0dXJlcy5taW5lY3JhZnQubmV0L3RleHR1cmUvZDY1NTE4NDA5NTVmNTI0MzY3NTgwZjExYjM1MjI4OTM4YjY3ODYzOTdhOGYyZThjOGNjNmIwZWIwMWI1ZGIzZCJ9fX0="));
         mobs.put(4, categoryFour);
 
         List<MobCreature> categoryFive = new ArrayList<>();
-        categoryFive.add(new MobCreature("Allay", EntityType.ALLAY, ""));
-        categoryFive.add(new MobCreature("Tadpole", EntityType.TADPOLE, ""));
-        categoryFive.add(new MobCreature("Skeleton Horse", EntityType.SKELETON_HORSE, ""));
-        categoryFive.add(new MobCreature("Dolphin", EntityType.DOLPHIN, ""));
-        categoryFive.add(new MobCreature("Polar Bear", EntityType.POLAR_BEAR, ""));
-        categoryFive.add(new MobCreature("Piglin", EntityType.PIGLIN, ""));
-        categoryFive.add(new MobCreature("Piglin Brute", EntityType.PIGLIN_BRUTE, ""));
-        categoryFive.add(new MobCreature("Zombified Piglin", EntityType.ZOMBIFIED_PIGLIN, ""));
-        categoryFive.add(new MobCreature("Blaze", EntityType.BLAZE, ""));
-        categoryFive.add(new MobCreature("Magma Cube", EntityType.MAGMA_CUBE, ""));
+        categoryFive.add(new MobCreature("Allay", EntityType.ALLAY, "eyJ0ZXh0dXJlcyI6eyJTS0lOIjp7InVybCI6Imh0dHA6Ly90ZXh0dXJlcy5taW5lY3JhZnQubmV0L3RleHR1cmUvZDY1NTE4NDA5NTVmNTI0MzY3NTgwZjExYjM1MjI4OTM4YjY3ODYzOTdhOGYyZThjOGNjNmIwZWIwMWI1ZGIzZCJ9fX0="));
+        categoryFive.add(new MobCreature("Tadpole", EntityType.TADPOLE, "eyJ0ZXh0dXJlcyI6eyJTS0lOIjp7InVybCI6Imh0dHA6Ly90ZXh0dXJlcy5taW5lY3JhZnQubmV0L3RleHR1cmUvZDY1NTE4NDA5NTVmNTI0MzY3NTgwZjExYjM1MjI4OTM4YjY3ODYzOTdhOGYyZThjOGNjNmIwZWIwMWI1ZGIzZCJ9fX0="));
+        categoryFive.add(new MobCreature("Skeleton Horse", EntityType.SKELETON_HORSE, "eyJ0ZXh0dXJlcyI6eyJTS0lOIjp7InVybCI6Imh0dHA6Ly90ZXh0dXJlcy5taW5lY3JhZnQubmV0L3RleHR1cmUvZDY1NTE4NDA5NTVmNTI0MzY3NTgwZjExYjM1MjI4OTM4YjY3ODYzOTdhOGYyZThjOGNjNmIwZWIwMWI1ZGIzZCJ9fX0="));
+        categoryFive.add(new MobCreature("Dolphin", EntityType.DOLPHIN, "eyJ0ZXh0dXJlcyI6eyJTS0lOIjp7InVybCI6Imh0dHA6Ly90ZXh0dXJlcy5taW5lY3JhZnQubmV0L3RleHR1cmUvZDY1NTE4NDA5NTVmNTI0MzY3NTgwZjExYjM1MjI4OTM4YjY3ODYzOTdhOGYyZThjOGNjNmIwZWIwMWI1ZGIzZCJ9fX0="));
+        categoryFive.add(new MobCreature("Polar Bear", EntityType.POLAR_BEAR, "eyJ0ZXh0dXJlcyI6eyJTS0lOIjp7InVybCI6Imh0dHA6Ly90ZXh0dXJlcy5taW5lY3JhZnQubmV0L3RleHR1cmUvZDY1NTE4NDA5NTVmNTI0MzY3NTgwZjExYjM1MjI4OTM4YjY3ODYzOTdhOGYyZThjOGNjNmIwZWIwMWI1ZGIzZCJ9fX0="));
+        categoryFive.add(new MobCreature("Piglin", EntityType.PIGLIN, "eyJ0ZXh0dXJlcyI6eyJTS0lOIjp7InVybCI6Imh0dHA6Ly90ZXh0dXJlcy5taW5lY3JhZnQubmV0L3RleHR1cmUvZDY1NTE4NDA5NTVmNTI0MzY3NTgwZjExYjM1MjI4OTM4YjY3ODYzOTdhOGYyZThjOGNjNmIwZWIwMWI1ZGIzZCJ9fX0="));
+        categoryFive.add(new MobCreature("Piglin Brute", EntityType.PIGLIN_BRUTE, "eyJ0ZXh0dXJlcyI6eyJTS0lOIjp7InVybCI6Imh0dHA6Ly90ZXh0dXJlcy5taW5lY3JhZnQubmV0L3RleHR1cmUvZDY1NTE4NDA5NTVmNTI0MzY3NTgwZjExYjM1MjI4OTM4YjY3ODYzOTdhOGYyZThjOGNjNmIwZWIwMWI1ZGIzZCJ9fX0="));
+        categoryFive.add(new MobCreature("Zombified Piglin", EntityType.ZOMBIFIED_PIGLIN, "eyJ0ZXh0dXJlcyI6eyJTS0lOIjp7InVybCI6Imh0dHA6Ly90ZXh0dXJlcy5taW5lY3JhZnQubmV0L3RleHR1cmUvZDY1NTE4NDA5NTVmNTI0MzY3NTgwZjExYjM1MjI4OTM4YjY3ODYzOTdhOGYyZThjOGNjNmIwZWIwMWI1ZGIzZCJ9fX0="));
+        categoryFive.add(new MobCreature("Blaze", EntityType.BLAZE, "eyJ0ZXh0dXJlcyI6eyJTS0lOIjp7InVybCI6Imh0dHA6Ly90ZXh0dXJlcy5taW5lY3JhZnQubmV0L3RleHR1cmUvZDY1NTE4NDA5NTVmNTI0MzY3NTgwZjExYjM1MjI4OTM4YjY3ODYzOTdhOGYyZThjOGNjNmIwZWIwMWI1ZGIzZCJ9fX0="));
+        categoryFive.add(new MobCreature("Magma Cube", EntityType.MAGMA_CUBE, "eyJ0ZXh0dXJlcyI6eyJTS0lOIjp7InVybCI6Imh0dHA6Ly90ZXh0dXJlcy5taW5lY3JhZnQubmV0L3RleHR1cmUvZDY1NTE4NDA5NTVmNTI0MzY3NTgwZjExYjM1MjI4OTM4YjY3ODYzOTdhOGYyZThjOGNjNmIwZWIwMWI1ZGIzZCJ9fX0="));
         mobs.put(5, categoryFive);
 
         List<MobCreature> categorySix = new ArrayList<>();
-        categorySix.add(new MobCreature("Mooshroom Cow", EntityType.MUSHROOM_COW, ""));
-        categorySix.add(new MobCreature("Elder Guardian", EntityType.ELDER_GUARDIAN, ""));
-        categorySix.add(new MobCreature("Evoker", EntityType.EVOKER, ""));
-        categorySix.add(new MobCreature("Ravager", EntityType.RAVAGER, ""));
-        categorySix.add(new MobCreature("Shulker", EntityType.SHULKER, ""));
+        categorySix.add(new MobCreature("Mooshroom Cow", EntityType.MUSHROOM_COW, "eyJ0ZXh0dXJlcyI6eyJTS0lOIjp7InVybCI6Imh0dHA6Ly90ZXh0dXJlcy5taW5lY3JhZnQubmV0L3RleHR1cmUvZDY1NTE4NDA5NTVmNTI0MzY3NTgwZjExYjM1MjI4OTM4YjY3ODYzOTdhOGYyZThjOGNjNmIwZWIwMWI1ZGIzZCJ9fX0="));
+        categorySix.add(new MobCreature("Elder Guardian", EntityType.ELDER_GUARDIAN, "eyJ0ZXh0dXJlcyI6eyJTS0lOIjp7InVybCI6Imh0dHA6Ly90ZXh0dXJlcy5taW5lY3JhZnQubmV0L3RleHR1cmUvZDY1NTE4NDA5NTVmNTI0MzY3NTgwZjExYjM1MjI4OTM4YjY3ODYzOTdhOGYyZThjOGNjNmIwZWIwMWI1ZGIzZCJ9fX0="));
+        categorySix.add(new MobCreature("Evoker", EntityType.EVOKER, "eyJ0ZXh0dXJlcyI6eyJTS0lOIjp7InVybCI6Imh0dHA6Ly90ZXh0dXJlcy5taW5lY3JhZnQubmV0L3RleHR1cmUvZDY1NTE4NDA5NTVmNTI0MzY3NTgwZjExYjM1MjI4OTM4YjY3ODYzOTdhOGYyZThjOGNjNmIwZWIwMWI1ZGIzZCJ9fX0="));
+        categorySix.add(new MobCreature("Ravager", EntityType.RAVAGER, "eyJ0ZXh0dXJlcyI6eyJTS0lOIjp7InVybCI6Imh0dHA6Ly90ZXh0dXJlcy5taW5lY3JhZnQubmV0L3RleHR1cmUvZDY1NTE4NDA5NTVmNTI0MzY3NTgwZjExYjM1MjI4OTM4YjY3ODYzOTdhOGYyZThjOGNjNmIwZWIwMWI1ZGIzZCJ9fX0="));
+        categorySix.add(new MobCreature("Shulker", EntityType.SHULKER, "eyJ0ZXh0dXJlcyI6eyJTS0lOIjp7InVybCI6Imh0dHA6Ly90ZXh0dXJlcy5taW5lY3JhZnQubmV0L3RleHR1cmUvZDY1NTE4NDA5NTVmNTI0MzY3NTgwZjExYjM1MjI4OTM4YjY3ODYzOTdhOGYyZThjOGNjNmIwZWIwMWI1ZGIzZCJ9fX0="));
         mobs.put(6, categorySix);
 
         List<MobCreature> categorySeven = new ArrayList<>();
-        categorySeven.add(new MobCreature("Enemy Player", EntityType.PLAYER, ""));
-        categorySeven.add(new MobCreature("Warden", EntityType.WARDEN, ""));
-        categorySeven.add(new MobCreature("Sniffer", EntityType.SNIFFER, ""));
+        categorySeven.add(new MobCreature("Enemy Player", EntityType.PLAYER, "eyJ0ZXh0dXJlcyI6eyJTS0lOIjp7InVybCI6Imh0dHA6Ly90ZXh0dXJlcy5taW5lY3JhZnQubmV0L3RleHR1cmUvZDY1NTE4NDA5NTVmNTI0MzY3NTgwZjExYjM1MjI4OTM4YjY3ODYzOTdhOGYyZThjOGNjNmIwZWIwMWI1ZGIzZCJ9fX0="));
+        categorySeven.add(new MobCreature("Warden", EntityType.WARDEN, "eyJ0ZXh0dXJlcyI6eyJTS0lOIjp7InVybCI6Imh0dHA6Ly90ZXh0dXJlcy5taW5lY3JhZnQubmV0L3RleHR1cmUvZDY1NTE4NDA5NTVmNTI0MzY3NTgwZjExYjM1MjI4OTM4YjY3ODYzOTdhOGYyZThjOGNjNmIwZWIwMWI1ZGIzZCJ9fX0="));
+        categorySeven.add(new MobCreature("Sniffer", EntityType.SNIFFER, "eyJ0ZXh0dXJlcyI6eyJTS0lOIjp7InVybCI6Imh0dHA6Ly90ZXh0dXJlcy5taW5lY3JhZnQubmV0L3RleHR1cmUvZDY1NTE4NDA5NTVmNTI0MzY3NTgwZjExYjM1MjI4OTM4YjY3ODYzOTdhOGYyZThjOGNjNmIwZWIwMWI1ZGIzZCJ9fX0="));
         mobs.put(7, categorySeven);
 
         List<MobCreature> categoryEight = new ArrayList<>();
-        categoryEight.add(new MobCreature("Wither", EntityType.WITHER, ""));
+        categoryEight.add(new MobCreature("Wither", EntityType.WITHER, "eyJ0ZXh0dXJlcyI6eyJTS0lOIjp7InVybCI6Imh0dHA6Ly90ZXh0dXJlcy5taW5lY3JhZnQubmV0L3RleHR1cmUvZDY1NTE4NDA5NTVmNTI0MzY3NTgwZjExYjM1MjI4OTM4YjY3ODYzOTdhOGYyZThjOGNjNmIwZWIwMWI1ZGIzZCJ9fX0="));
         mobs.put(8, categoryEight);
 
         List<MobCreature> categoryNine = new ArrayList<>();
-        categoryNine.add(new MobCreature("Ender Dragon", EntityType.ENDER_DRAGON, ""));
+        categoryNine.add(new MobCreature("Ender Dragon", EntityType.ENDER_DRAGON, "eyJ0ZXh0dXJlcyI6eyJTS0lOIjp7InVybCI6Imh0dHA6Ly90ZXh0dXJlcy5taW5lY3JhZnQubmV0L3RleHR1cmUvZDY1NTE4NDA5NTVmNTI0MzY3NTgwZjExYjM1MjI4OTM4YjY3ODYzOTdhOGYyZThjOGNjNmIwZWIwMWI1ZGIzZCJ9fX0="));
         mobs.put(9, categoryNine);
     }
 }

@@ -22,7 +22,9 @@ public final class MobBattle extends JavaPlugin {
 
         // Create an instance of ClockInventory and register it as an event listener
         ClockInventory clockInventory = new ClockInventory();
+        MobKillEventHandler mobKillEventHandler = new MobKillEventHandler();
         getServer().getPluginManager().registerEvents(clockInventory, this);
+        getServer().getPluginManager().registerEvents(mobKillEventHandler, this);
     }
 
     @Override
