@@ -15,7 +15,7 @@ import java.util.UUID;
 
 public class MobKillEventHandler implements Listener {
 
-    private final ClockInventoryRepository clockInventoryRepository = new ClockInventoryRepository();
+    private final ClockInventoryRepository clockInventoryRepository = ClockInventoryRepository.getInstance();
     private final Random random = new Random();
 
     @EventHandler
@@ -27,16 +27,9 @@ public class MobKillEventHandler implements Listener {
 
             EntityType entityType = event.getEntityType();
 
-            int points = clockInventory.updateMobKill(entityType);
-
-            System.out.println("onMobDeath entityType: " + entityType + ", points: " + points);
-
-            if(points == 0){
+            if(!clockInventory.updateMobKill(entityType)){
                 return;
             }
-
-            clockInventory.updatePoints(points);
-            System.out.println("current points: " + clockInventory.getCurrentPoints() + " for player: " + player.getName());
 
             Category category = clockInventory.getCategoryForEntityType(entityType);
 

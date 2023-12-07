@@ -118,6 +118,7 @@ public class ClockInventory implements Listener {
             if (pageIndex < categories.size()) {
                 addNavigationItem(categoryPage, nextPageBase64, "Next Site", pageSize - 1);
             }
+            addPlayerHeadToPointsPage(categoryPage, player);
             fillEmptySlotsWithGlassPanes(categoryPage);
             pages.put(pageIndex, categoryPage);
             pageIndex++;
@@ -130,6 +131,15 @@ public class ClockInventory implements Listener {
         meta.displayName(Component.text(name, NamedTextColor.GREEN));
         item.setItemMeta(meta);
         inv.setItem(slot, item);
+    }
+
+    private void addPlayerHeadToPointsPage(Inventory pointsPage, Player player) {
+        ItemStack playerHead = new ItemStack(Material.PLAYER_HEAD, 1);
+        SkullMeta playerMeta = (SkullMeta) playerHead.getItemMeta();
+        playerMeta.setOwningPlayer(player);
+        playerMeta.displayName(Component.text("Player Points", NamedTextColor.GOLD));
+        playerHead.setItemMeta(playerMeta);
+        pointsPage.setItem(pageSize - 5, playerHead);
     }
 
     private String convertItemNameToString(ItemStack reward){
@@ -218,7 +228,7 @@ public class ClockInventory implements Listener {
         }
         mainRewardsMeta.lore(mainRewardsLore);
         mainRewardsItem.setItemMeta(mainRewardsMeta);
-        page.setItem(pageSize - 6, mainRewardsItem);
+        page.setItem(pageSize - 7, mainRewardsItem);
 
         ItemStack luckyRewardsItem = new ItemStack(Material.DIAMOND);
         ItemMeta luckyRewardsMeta = luckyRewardsItem.getItemMeta();
@@ -230,32 +240,36 @@ public class ClockInventory implements Listener {
         }
         luckyRewardsMeta.lore(luckyRewardsLore);
         luckyRewardsItem.setItemMeta(luckyRewardsMeta);
-        page.setItem(pageSize - 4, luckyRewardsItem);
+        page.setItem(pageSize - 3, luckyRewardsItem);
     }
 
-    public int updateMobKill(EntityType entityType){
+    public boolean updateMobKill(EntityType entityType){
 
         if(killedMobs.stream().anyMatch(x -> x.getEntityType() == entityType)){
-            return 0;
+            return false;
         }
 
         for (Category category: categories) {
             for (MobCreature mobCreature: category.getMobs()) {
                 if(mobCreature.getEntityType().equals(entityType)){
                     if(mobCreature.isDead()){
-                        return 0;
+                        return false;
                     }
                     mobCreature.killedMob();
                     killedMobs.add(mobCreature);
-                    return category.getPoints();
+                    updatePoints(category.getPoints());
+                    return true;
                 }
             }
         }
-        return 0;
+        return true;
     }
 
     public void updatePoints(int points){
+        System.out.println("Points: " + points);
+        System.out.println("Points before update: " + currentPoints);
         this.currentPoints += points;
+        System.out.println("Points after update: " + currentPoints);
     }
 
     @EventHandler
@@ -266,6 +280,7 @@ public void onPlayerInteract(PlayerInteractEvent event) {
     if (item != null && item.getType() == Material.CLOCK && event.getAction().name().contains("RIGHT_CLICK")) {
         Player player = event.getPlayer();
 
+        System.out.println("Points when opening Clock: " + currentPoints);
         initializePages(player);
 
         player.openInventory(pages.getOrDefault(currentPage, pages.get(0)));
@@ -274,28 +289,46 @@ public void onPlayerInteract(PlayerInteractEvent event) {
 
     @EventHandler
     public void onInventoryClick(InventoryClickEvent event) {
-        if(!(event.getWhoClicked() instanceof Player)){
+        if (!(event.getWhoClicked() instanceof Player)) {
             return;
         }
 
         Player player = (Player) event.getWhoClicked();
+        Inventory clickedInventory = event.getClickedInventory();
+        ItemStack clickedItem = event.getCurrentItem();
 
-        if(pages.containsValue(event.getInventory())){
+        if (pages.containsValue(clickedInventory)) {
             event.setCancelled(true);
         }
 
-        ItemStack clickedItem = event.getCurrentItem();
-        if (clickedItem != null && clickedItem.hasItemMeta() && clickedItem.getItemMeta().displayName() != null) {
-            Component displayNameComponent = clickedItem.getItemMeta().displayName();
-            assert displayNameComponent != null;
-            String displayName = LegacyComponentSerializer.legacySection().serialize(displayNameComponent);
+        if (clickedItem != null && clickedItem.hasItemMeta()) {
+            ItemMeta meta = clickedItem.getItemMeta();
+            Component displayNameComponent = meta.displayName();
 
-            if (displayName.contains("Next Site")) {
-                currentPage = (currentPage + 1) % pages.size();
-                player.openInventory(pages.get(currentPage));
-            } else if (displayName.contains("Previous Site")) {
-                currentPage = (currentPage - 1 + pages.size()) % pages.size();
-                player.openInventory(pages.get(currentPage));
+            if (displayNameComponent != null) {
+                String displayName = LegacyComponentSerializer.legacySection().serialize(displayNameComponent);
+
+                for (int i = 0; i < categories.size(); i++) {
+                    Category category = categories.get(i);
+                    if (displayName.contains("Category: " + category.getCategoryNumber())) {
+                        currentPage = i + 1;
+                        player.openInventory(pages.getOrDefault(currentPage, pages.get(0)));
+                        return;
+                    }
+                }
+
+                if (displayName.contains("Next Site")) {
+                    currentPage = (currentPage + 1) % pages.size();
+                    player.openInventory(pages.getOrDefault(currentPage, pages.get(0)));
+                } else if (displayName.contains("Previous Site")) {
+                    currentPage = (currentPage - 1 + pages.size()) % pages.size();
+                    player.openInventory(pages.getOrDefault(currentPage, pages.get(0)));
+                }
+
+                if (displayName.contains("Player Points")) {
+                    currentPage = 0;
+                    player.openInventory(pages.get(currentPage));
+                }
             }
         }
     }

@@ -6,9 +6,19 @@ import java.util.HashMap;
 import java.util.UUID;
 
 public class ClockInventoryRepository {
-    private HashMap<UUID, ClockInventory> inventories = new HashMap<>();
+    private static ClockInventoryRepository instance;
+    private final HashMap<UUID, ClockInventory> inventoryMap = new HashMap<>();
 
-    public ClockInventory getInventory(UUID playerId){
-        return inventories.computeIfAbsent(playerId, k -> new ClockInventory());
+    private ClockInventoryRepository() {}
+
+    public static synchronized ClockInventoryRepository getInstance() {
+        if (instance == null) {
+            instance = new ClockInventoryRepository();
+        }
+        return instance;
+    }
+
+    public ClockInventory getInventory(UUID playerId) {
+        return inventoryMap.computeIfAbsent(playerId, k -> new ClockInventory());
     }
 }
