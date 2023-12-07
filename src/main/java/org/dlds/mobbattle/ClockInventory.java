@@ -34,7 +34,6 @@ public class ClockInventory implements Listener {
 
     public ClockInventory() {
         this.categories = categoryService.initializeCategories();
-        initializePages();
     }
 
     public Category getCategoryForEntityType(EntityType entityType){
@@ -62,25 +61,129 @@ public class ClockInventory implements Listener {
         return skull;
     }
 
-    private void initializePages(){
-        Inventory pointsPage = Bukkit.createInventory(null, pageSize, Component.text("Spieler Punkte", NamedTextColor.GOLD));
+    private void fillEmptySlotsWithGlassPanes(Inventory inv) {
+        ItemStack glassPane = new ItemStack(Material.GRAY_STAINED_GLASS_PANE);
+        ItemMeta meta = glassPane.getItemMeta();
+        meta.displayName(Component.text(""));
+        glassPane.setItemMeta(meta);
+
+        for (int i = 0; i < inv.getSize(); i++) {
+            if (inv.getItem(i) == null || inv.getItem(i).getType() == Material.AIR) {
+                inv.setItem(i, glassPane);
+            }
+        }
+    }
+
+    private void initializePages(Player player){
+
+        String previousPageBase64 = "eyJ0ZXh0dXJlcyI6eyJTS0lOIjp7InVybCI6Imh0dHA6Ly90ZXh0dXJlcy5taW5lY3JhZnQubmV0L3RleHR1cmUvYmQ2OWUwNmU1ZGFkZmQ4NGU1ZjNkMWMyMTA2M2YyNTUzYjJmYTk0NWVlMWQ0ZDcxNTJmZGM1NDI1YmMxMmE5In19fQ==";
+        String nextPageBase64 = "eyJ0ZXh0dXJlcyI6eyJTS0lOIjp7InVybCI6Imh0dHA6Ly90ZXh0dXJlcy5taW5lY3JhZnQubmV0L3RleHR1cmUvMTliZjMyOTJlMTI2YTEwNWI1NGViYTcxM2FhMWIxNTJkNTQxYTFkODkzODgyOWM1NjM2NGQxNzhlZDIyYmYifX19";
+
+        Inventory pointsPage = Bukkit.createInventory(null, pageSize, Component.text("Player Points", NamedTextColor.BLACK));
+
+        for (Category category : categories) {
+
+            ItemStack categoryHead = getCustomSkull(category.getBase64HeadString());
+            SkullMeta meta = (SkullMeta) categoryHead.getItemMeta();
+            meta.displayName(Component.text("Category: " + category.getCategoryNumber(), NamedTextColor.GREEN));
+
+            categoryHead.setItemMeta(meta);
+
+            if(category.getCategoryNumber() < 5){
+                pointsPage.setItem((20 + category.getCategoryNumber()), categoryHead);
+            } else {
+                pointsPage.setItem((24 + category.getCategoryNumber()), categoryHead);
+            }
+
+        }
+
+        ItemStack totalPointsHead = new ItemStack(Material.PLAYER_HEAD, 1);
+        SkullMeta meta = (SkullMeta) totalPointsHead.getItemMeta();
+        meta.setOwningPlayer(player);
+        totalPointsHead.setItemMeta(meta);
+        ItemMeta totalPointsMeta = totalPointsHead.getItemMeta();
+        totalPointsMeta.displayName(Component.text("Total Points: " + currentPoints, NamedTextColor.GOLD));
+        totalPointsHead.setItemMeta(totalPointsMeta);
+        pointsPage.setItem(20, totalPointsHead);
+
+        addNavigationItem(pointsPage, nextPageBase64, "Next Site", pageSize - 1);
+        fillEmptySlotsWithGlassPanes(pointsPage);
         pages.put(0, pointsPage);
 
         int pageIndex = 1;
         for (Category category : categories) {
-            Inventory categoryPage = Bukkit.createInventory(null, pageSize, Component.text("Kategorie: " + category.getCategoryNumber(), NamedTextColor.GOLD));
+            Inventory categoryPage = Bukkit.createInventory(null, pageSize, Component.text("Category: " + category.getCategoryNumber(), NamedTextColor.BLACK));
             initializeCategoryPage(categoryPage, category);
+            addNavigationItem(categoryPage, previousPageBase64, "Previous Site", 45);
+            if (pageIndex < categories.size()) {
+                addNavigationItem(categoryPage, nextPageBase64, "Next Site", pageSize - 1);
+            }
+            fillEmptySlotsWithGlassPanes(categoryPage);
             pages.put(pageIndex, categoryPage);
             pageIndex++;
         }
     }
 
+    private void addNavigationItem(Inventory inv, String base64, String name, int slot) {
+        ItemStack item = getCustomSkull(base64);
+        ItemMeta meta = item.getItemMeta();
+        meta.displayName(Component.text(name, NamedTextColor.GREEN));
+        item.setItemMeta(meta);
+        inv.setItem(slot, item);
+    }
+
+    private String convertItemNameToString(ItemStack reward){
+        String rewardName = "";
+
+        switch (reward.getType()){
+            case IRON_INGOT:
+                rewardName += "Iron Ingot";
+                break;
+            case DIAMOND:
+                rewardName += "Diamond";
+                break;
+            case NETHERITE_INGOT:
+                rewardName += "Netherite Ingot";
+                break;
+            case NETHERITE_UPGRADE_SMITHING_TEMPLATE:
+                rewardName += "Netherite Upgrade Smithing Template";
+                break;
+            case SHULKER_BOX:
+                rewardName += "Shulker Box";
+                break;
+            case ENCHANTED_GOLDEN_APPLE:
+                rewardName += "Enchanted Golden Apple";
+                break;
+            case OAK_LOG:
+                rewardName += "Oak Log";
+                break;
+            case ARROW:
+                rewardName += "Arrow";
+                break;
+            case GOLDEN_APPLE:
+                rewardName += "Golden Apple";
+                break;
+            default:
+                break;
+        }
+
+        rewardName += " x ";
+
+        rewardName += reward.getAmount();
+
+        return rewardName;
+    }
+
     private void initializeCategoryPage(Inventory page, Category category) {
+        int slot = 10;
+        int mobsInRow = 0;
         for (MobCreature mob : category.getMobs()) {
             ItemStack mobHead;
-            System.out.println("initializeCategoryPage mobName: " + mob.getName() +  ", mobHeadString: " + mob.getMobHead());
-            if(mob.getMobHead() != null && !mob.getMobHead().isEmpty()){
+
+            if(mob.getMobHead() != null && !mob.getMobHead().isEmpty() && !mob.getName().equals("Ender Dragon")){
                 mobHead = getCustomSkull(mob.getMobHead());
+            } else if(mob.getName().equals("Ender Dragon")){
+                mobHead = new ItemStack(Material.DRAGON_HEAD);
             } else {
                 mobHead = new ItemStack(Material.PLAYER_HEAD);
             }
@@ -93,62 +196,41 @@ public class ClockInventory implements Listener {
             }
 
             mobHead.setItemMeta(meta);
-            page.addItem(mobHead);
+            page.setItem(slot, mobHead);
+
+            mobsInRow++;
+
+            if(mobsInRow == 7){
+                mobsInRow = 0;
+                slot += 3;
+            } else {
+                slot++;
+            }
         }
 
         ItemStack mainRewardsItem = new ItemStack(Material.EMERALD);
         ItemMeta mainRewardsMeta = mainRewardsItem.getItemMeta();
-        mainRewardsMeta.displayName(Component.text("Hauptbelohnungen", NamedTextColor.GREEN));
+        mainRewardsMeta.displayName(Component.text("Main Rewards", NamedTextColor.GREEN));
         List<Component> mainRewardsLore = new ArrayList<>();
         for (ItemStack reward : category.getMainRewards()) {
-            mainRewardsLore.add(Component.text(reward.getType().name(), NamedTextColor.WHITE));
+            String rewardName = convertItemNameToString(reward);
+            mainRewardsLore.add(Component.text(rewardName, NamedTextColor.WHITE));
         }
         mainRewardsMeta.lore(mainRewardsLore);
         mainRewardsItem.setItemMeta(mainRewardsMeta);
-        page.setItem(25, mainRewardsItem);
+        page.setItem(pageSize - 6, mainRewardsItem);
 
         ItemStack luckyRewardsItem = new ItemStack(Material.DIAMOND);
         ItemMeta luckyRewardsMeta = luckyRewardsItem.getItemMeta();
-        luckyRewardsMeta.displayName(Component.text("Glücksbelohnungen", NamedTextColor.BLUE));
+        luckyRewardsMeta.displayName(Component.text("Luck Rewards", NamedTextColor.BLUE));
         List<Component> luckyRewardsLore = new ArrayList<>();
         for (ItemStack reward : category.getLuckyRewards()) {
-            luckyRewardsLore.add(Component.text(reward.getType().name(), NamedTextColor.WHITE));
+            String rewardName = convertItemNameToString(reward);
+            luckyRewardsLore.add(Component.text(rewardName, NamedTextColor.WHITE));
         }
         luckyRewardsMeta.lore(luckyRewardsLore);
         luckyRewardsItem.setItemMeta(luckyRewardsMeta);
-        page.setItem(26, luckyRewardsItem);
-    }
-
-    private void initializeInventory() {
-        Inventory pointsPage = pages.get(0);
-        pointsPage.clear();
-
-        for (Category category : categories) {
-            int categoryPoints = category.getPoints();
-            boolean allMobsKilled = category.getMobs().stream().allMatch(killedMobs::contains);
-
-            ItemStack categoryHead = new ItemStack(Material.PLAYER_HEAD);
-            SkullMeta meta = (SkullMeta) categoryHead.getItemMeta();
-            meta.displayName(Component.text("Kategorie: " + category.getCategoryNumber() + ": " + categoryPoints + " Punkte", NamedTextColor.GREEN));
-
-            if (allMobsKilled) {
-                categoryHead.addUnsafeEnchantment(Enchantment.LUCK, 1);
-            }
-
-            pointsPage.addItem(categoryHead);
-        }
-
-        ItemStack totalPointsItem = new ItemStack(Material.GOLD_INGOT);
-        ItemMeta totalPointsMeta = totalPointsItem.getItemMeta();
-        totalPointsMeta.displayName(Component.text("Gesamtpunkte: " + currentPoints, NamedTextColor.GOLD));
-        totalPointsItem.setItemMeta(totalPointsMeta);
-        pointsPage.setItem(pageSize - 1, totalPointsItem);
-
-        for (int i = 1; i <= categories.size(); i++) {
-            Inventory categoryPage = pages.get(i);
-            Category category = categories.get(i - 1);
-            initializeCategoryPage(categoryPage, category);
-        }
+        page.setItem(pageSize - 4, luckyRewardsItem);
     }
 
     public int updateMobKill(EntityType entityType){
@@ -184,9 +266,9 @@ public void onPlayerInteract(PlayerInteractEvent event) {
     if (item != null && item.getType() == Material.CLOCK && event.getAction().name().contains("RIGHT_CLICK")) {
         Player player = event.getPlayer();
 
-        initializeInventory();
+        initializePages(player);
 
-        player.openInventory(pages.get(0));
+        player.openInventory(pages.getOrDefault(currentPage, pages.get(0)));
     }
 }
 
@@ -208,10 +290,10 @@ public void onPlayerInteract(PlayerInteractEvent event) {
             assert displayNameComponent != null;
             String displayName = LegacyComponentSerializer.legacySection().serialize(displayNameComponent);
 
-            if (displayName.contains("Nächste Seite")) {
+            if (displayName.contains("Next Site")) {
                 currentPage = (currentPage + 1) % pages.size();
                 player.openInventory(pages.get(currentPage));
-            } else if (displayName.contains("Vorherige Seite")) {
+            } else if (displayName.contains("Previous Site")) {
                 currentPage = (currentPage - 1 + pages.size()) % pages.size();
                 player.openInventory(pages.get(currentPage));
             }

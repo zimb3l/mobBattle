@@ -7,18 +7,20 @@ import java.util.List;
 
 public class Category {
 
-    private int categoryNumber;
-    private int points;
-    private List<MobCreature> mobs;
-    private List<ItemStack> mainRewards;
-    private List<ItemStack> luckyRewards;
+    private final int categoryNumber;
+    private final int points;
+    private final List<MobCreature> mobs;
+    private final List<ItemStack> mainRewards;
+    private final List<ItemStack> luckyRewards;
+    private final String base64HeadString;
 
-    public Category(int categoryNumber, int points, List<MobCreature> mobs, List<ItemStack> mainRewards, List<ItemStack> luckyRewards){
+    public Category(int categoryNumber, int points, List<MobCreature> mobs, List<ItemStack> mainRewards, List<ItemStack> luckyRewards, String base64HeadString){
         this.categoryNumber = categoryNumber;
         this.points = points;
         this.mobs = mobs;
         this.mainRewards = mainRewards;
         this.luckyRewards = luckyRewards;
+        this.base64HeadString = base64HeadString;
     }
 
     public int getCategoryNumber() {
@@ -45,5 +47,9 @@ public class Category {
             return new ArrayList<>();
         }
         return luckyRewards;
+    }
+
+    public String getBase64HeadString() {
+        return base64HeadString;
     }
 }
