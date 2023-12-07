@@ -24,16 +24,44 @@ import java.util.UUID;
 import java.util.*;
 
 public class ClockInventory implements Listener {
-    private List<Category> categories;
-    private CategoryService categoryService = new CategoryService();
-    private List<MobCreature> killedMobs = new ArrayList<>();
-    private Map<Integer, Inventory> pages = new HashMap<>();
-    private int currentPoints = 0;
+    private final List<Category> categories;
+    private final List<MobCreature> killedMobs = new ArrayList<>();
+    private final Map<Integer, Inventory> pages = new HashMap<>();
+    private int currentPoints;
     private int currentPage = 0;
     private final int pageSize = 54;
 
     public ClockInventory() {
+        CategoryService categoryService = new CategoryService();
         this.categories = categoryService.initializeCategories();
+    }
+
+    public int getCurrentPage() {
+        return currentPage;
+    }
+
+    public Map<Integer, Inventory> getPages() {
+        return pages;
+    }
+
+    public List<Category> getCategories() {
+        return categories;
+    }
+
+    public List<MobCreature> getKilledMobs() {
+        return killedMobs;
+    }
+
+    public int getPageSize() {
+        return pageSize;
+    }
+
+    public void setCurrentPoints(int currentPoints) {
+        this.currentPoints = currentPoints;
+    }
+
+    public void setCurrentPage(int currentPage) {
+        this.currentPage = currentPage;
     }
 
     public Category getCategoryForEntityType(EntityType entityType){
@@ -74,7 +102,7 @@ public class ClockInventory implements Listener {
         }
     }
 
-    private void initializePages(Player player){
+    public void initializePages(Player player){
 
         String previousPageBase64 = "eyJ0ZXh0dXJlcyI6eyJTS0lOIjp7InVybCI6Imh0dHA6Ly90ZXh0dXJlcy5taW5lY3JhZnQubmV0L3RleHR1cmUvYmQ2OWUwNmU1ZGFkZmQ4NGU1ZjNkMWMyMTA2M2YyNTUzYjJmYTk0NWVlMWQ0ZDcxNTJmZGM1NDI1YmMxMmE5In19fQ==";
         String nextPageBase64 = "eyJ0ZXh0dXJlcyI6eyJTS0lOIjp7InVybCI6Imh0dHA6Ly90ZXh0dXJlcy5taW5lY3JhZnQubmV0L3RleHR1cmUvMTliZjMyOTJlMTI2YTEwNWI1NGViYTcxM2FhMWIxNTJkNTQxYTFkODkzODgyOWM1NjM2NGQxNzhlZDIyYmYifX19";
@@ -270,66 +298,5 @@ public class ClockInventory implements Listener {
         System.out.println("Points before update: " + currentPoints);
         this.currentPoints += points;
         System.out.println("Points after update: " + currentPoints);
-    }
-
-    @EventHandler
-public void onPlayerInteract(PlayerInteractEvent event) {
-    ItemStack item = event.getItem();
-
-    // Check if the player is right-clicking a clock
-    if (item != null && item.getType() == Material.CLOCK && event.getAction().name().contains("RIGHT_CLICK")) {
-        Player player = event.getPlayer();
-
-        System.out.println("Points when opening Clock: " + currentPoints);
-        initializePages(player);
-
-        player.openInventory(pages.getOrDefault(currentPage, pages.get(0)));
-    }
-}
-
-    @EventHandler
-    public void onInventoryClick(InventoryClickEvent event) {
-        if (!(event.getWhoClicked() instanceof Player)) {
-            return;
-        }
-
-        Player player = (Player) event.getWhoClicked();
-        Inventory clickedInventory = event.getClickedInventory();
-        ItemStack clickedItem = event.getCurrentItem();
-
-        if (pages.containsValue(clickedInventory)) {
-            event.setCancelled(true);
-        }
-
-        if (clickedItem != null && clickedItem.hasItemMeta()) {
-            ItemMeta meta = clickedItem.getItemMeta();
-            Component displayNameComponent = meta.displayName();
-
-            if (displayNameComponent != null) {
-                String displayName = LegacyComponentSerializer.legacySection().serialize(displayNameComponent);
-
-                for (int i = 0; i < categories.size(); i++) {
-                    Category category = categories.get(i);
-                    if (displayName.contains("Category: " + category.getCategoryNumber())) {
-                        currentPage = i + 1;
-                        player.openInventory(pages.getOrDefault(currentPage, pages.get(0)));
-                        return;
-                    }
-                }
-
-                if (displayName.contains("Next Site")) {
-                    currentPage = (currentPage + 1) % pages.size();
-                    player.openInventory(pages.getOrDefault(currentPage, pages.get(0)));
-                } else if (displayName.contains("Previous Site")) {
-                    currentPage = (currentPage - 1 + pages.size()) % pages.size();
-                    player.openInventory(pages.getOrDefault(currentPage, pages.get(0)));
-                }
-
-                if (displayName.contains("Player Points")) {
-                    currentPage = 0;
-                    player.openInventory(pages.get(currentPage));
-                }
-            }
-        }
     }
 }
