@@ -77,7 +77,7 @@ public class ClockInventoryEventHandler implements Listener {
                     player.openInventory(clockInventory.getPages().getOrDefault(clockInventory.getCurrentPage(), clockInventory.getPages().get(0)));
                 }
 
-                if (displayName.contains("Player Points")) {
+                if (displayName.contains("back to main page")) {
                     clockInventory.setCurrentPage(0);
                     player.openInventory(clockInventory.getPages().get(clockInventory.getCurrentPage()));
                 }

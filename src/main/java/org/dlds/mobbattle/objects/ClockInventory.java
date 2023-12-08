@@ -18,9 +18,9 @@ import org.dlds.mobbattle.services.CategoryService;
 import java.util.*;
 
 public class ClockInventory implements Listener {
-    private List<Category> categories;
     private final int pageSize = 54;
     private final Map<Integer, Inventory> pages;
+    private List<Category> categories;
     private List<MobCreature> killedMobs;
     private int currentPoints;
     private int currentPage = 0;
@@ -48,16 +48,16 @@ public class ClockInventory implements Listener {
         return categories;
     }
 
+    public void setCategories(List<Category> categories) {
+        this.categories = categories;
+    }
+
     public List<MobCreature> getKilledMobs() {
         return killedMobs;
     }
 
     public void setKilledMobs(List<MobCreature> killedMobs) {
         this.killedMobs = killedMobs;
-    }
-
-    public void setCategories(List<Category> categories) {
-        this.categories = categories;
     }
 
     public int getPageSize() {
@@ -120,7 +120,7 @@ public class ClockInventory implements Listener {
         ItemStack playerHead = new ItemStack(Material.PLAYER_HEAD, 1);
         SkullMeta playerMeta = (SkullMeta) playerHead.getItemMeta();
         playerMeta.setOwningPlayer(player);
-        playerMeta.displayName(Component.text("Player Points", NamedTextColor.GOLD));
+        playerMeta.displayName(Component.text("back to main page", NamedTextColor.GOLD));
         playerHead.setItemMeta(playerMeta);
         pointsPage.setItem(pageSize - 5, playerHead);
     }
@@ -281,7 +281,7 @@ public class ClockInventory implements Listener {
         page.setItem(pageSize - 3, luckyRewardsItem);
     }
 
-    public boolean updateMobKill(EntityType entityType) {
+    public boolean updateMobKill(EntityType entityType, Player player) {
 
         if (killedMobs.stream().anyMatch(x -> x.getEntityType() == entityType)) {
             return false;
@@ -293,9 +293,14 @@ public class ClockInventory implements Listener {
                     if (mobCreature.isDead()) {
                         return false;
                     }
+                    int points = category.getPoints();
+
                     mobCreature.killedMob();
                     killedMobs.add(mobCreature);
-                    updatePoints(category.getPoints());
+                    updatePoints(points);
+
+                    player.sendActionBar(Component.text("+" + points, NamedTextColor.GREEN));
+
                     return true;
                 }
             }

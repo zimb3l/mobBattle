@@ -15,8 +15,8 @@ import java.util.stream.Collectors;
 
 public class ClockInventoryRepository {
     private static ClockInventoryRepository instance;
-    private HashMap<UUID, ClockInventory> inventoryMap = new HashMap<>();
     private final CategoryService categoryService;
+    private final HashMap<UUID, ClockInventory> inventoryMap = new HashMap<>();
     private File dataFolder;
 
     private ClockInventoryRepository() {

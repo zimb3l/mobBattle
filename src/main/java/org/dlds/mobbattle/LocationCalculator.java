@@ -44,7 +44,7 @@ public class LocationCalculator {
 
     public void assignPlayerSpawns() {
         int playerCount = getCurrentPlayerCount();
-        if (playerCount == 0) return; // No players online
+        if (playerCount == 0) return;
 
         int locationCount = spawnLocations.size();
         float spawnOffset = (float) locationCount / playerCount;

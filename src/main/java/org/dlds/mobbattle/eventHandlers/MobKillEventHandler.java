@@ -29,7 +29,7 @@ public class MobKillEventHandler implements Listener {
 
             EntityType entityType = event.getEntityType();
 
-            if (!clockInventory.updateMobKill(entityType)) {
+            if (!clockInventory.updateMobKill(entityType, player)) {
                 return;
             }
 
