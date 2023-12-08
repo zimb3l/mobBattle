@@ -15,3 +15,6 @@ commands:
   startBattle:
     description: Starts the battle.
     usage: /<command>
+  endBattle:
+    description: Ends the battle.
+    usage: /<command>

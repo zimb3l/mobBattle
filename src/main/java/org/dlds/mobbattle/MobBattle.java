@@ -2,21 +2,32 @@ package org.dlds.mobbattle;
 
 import net.kyori.adventure.text.Component;
 import net.kyori.adventure.text.format.NamedTextColor;
+import net.kyori.adventure.title.Title;
 import org.bukkit.Bukkit;
 import org.bukkit.World;
 import org.bukkit.command.Command;
 import org.bukkit.command.CommandSender;
+import org.bukkit.entity.Player;
 import org.bukkit.plugin.java.JavaPlugin;
+import org.bukkit.potion.PotionEffect;
+import org.bukkit.potion.PotionEffectType;
+import org.bukkit.scheduler.BukkitRunnable;
 import org.dlds.mobbattle.eventHandlers.ClockInventoryEventHandler;
 import org.dlds.mobbattle.eventHandlers.MobKillEventHandler;
+import org.dlds.mobbattle.objects.ClockInventory;
 import org.dlds.mobbattle.repositorys.ClockInventoryRepository;
+import org.dlds.mobbattle.repositorys.MobBattleRepository;
 import org.jetbrains.annotations.NotNull;
+
+import java.time.Duration;
+import java.util.*;
 
 public final class MobBattle extends JavaPlugin {
     private LocationCalculator locationCalculator;
     private TimerHandler timerHandler;
     private ClockInventoryRepository clockInventoryRepository;
-
+    private MobBattleRepository mobBattleRepository;
+    private boolean isBattleRunning = false;
 
     @Override
     public void onEnable() {
@@ -30,26 +41,113 @@ public final class MobBattle extends JavaPlugin {
         getServer().getPluginManager().registerEvents(mobKillEventHandler, this);
 
         clockInventoryRepository = ClockInventoryRepository.getInstance();
+
         Bukkit.getLogger().info("Loading all clock inventories!");
         clockInventoryRepository.loadAllInventories();
         Bukkit.getLogger().info("Finished loading all clock inventories!");
+
+        mobBattleRepository = new MobBattleRepository(this);
+        isBattleRunning = mobBattleRepository.loadGameState();
     }
 
     @Override
     public void onDisable() {
+        mobBattleRepository.saveGameState(isBattleRunning);
         Bukkit.getLogger().info("Saving all clock inventories!");
         clockInventoryRepository.saveAllInventories();
         Bukkit.getLogger().info("Finished saving all clock inventories!");
     }
 
+    public void initiateStartSequence() {
+        new BukkitRunnable() {
+            int countdown = 10;
+
+            @Override
+            public void run() {
+                if (countdown <= 0) {
+                    for (Player player : Bukkit.getOnlinePlayers()) {
+                        player.clearTitle();
+                        player.removePotionEffect(PotionEffectType.BLINDNESS);
+                        player.removePotionEffect(PotionEffectType.SLOW);
+                    }
+
+                    cancel();
+                    return;
+                }
+
+                for (Player player : Bukkit.getOnlinePlayers()) {
+                    Title title = Title.title(getCountdownTitle(countdown), Component.text("Get ready!"),
+                            Title.Times.times(Duration.ofMillis(0), Duration.ofSeconds(1), Duration.ofMillis(0)));
+                    player.showTitle(title);
+
+                    if (countdown == 10) {
+                        player.addPotionEffect(new PotionEffect(PotionEffectType.BLINDNESS, 60, 255, false, false));
+                        player.addPotionEffect(new PotionEffect(PotionEffectType.SLOW, 200, 255, false, false));
+                    }
+                }
+
+                countdown--;
+            }
+        }.runTaskTimer(this, 0, 20);
+    }
+
+
+    private Component getCountdownTitle(int countdown) {
+        NamedTextColor color;
+        if (countdown <= 3) {
+            color = NamedTextColor.GREEN;
+        } else if (countdown <= 6) {
+            color = NamedTextColor.YELLOW;
+        } else {
+            color = NamedTextColor.RED;
+        }
+
+        return Component.text(countdown, color);
+    }
+
     public void startBattle() {
-        World world = Bukkit.getServer().getWorlds().get(0); // Get the default world
+        if (isBattleRunning) {
+            Bukkit.getConsoleSender().sendMessage(Component.text("A battle is already ongoing!", NamedTextColor.RED));
+            return;
+        }
+
+        World world = Bukkit.getServer().getWorlds().get(0);
 
         locationCalculator.calculateSpawnLocations(world);
         locationCalculator.assignPlayerSpawns();
+        initiateStartSequence();
         timerHandler.setupScoreboardDisplay();
+        isBattleRunning = true;
     }
 
+    public void endBattle() {
+        isBattleRunning = false;
+
+        List<Map.Entry<UUID, Integer>> playerPoints = new ArrayList<>();
+
+        for (Map.Entry<UUID, ClockInventory> entry : clockInventoryRepository.getInventoryMap().entrySet()) {
+            UUID playerId = entry.getKey();
+            ClockInventory inventory = entry.getValue();
+            int points = inventory.getCurrentPoints();
+
+            playerPoints.add(new AbstractMap.SimpleEntry<>(playerId, points));
+        }
+
+        playerPoints.sort((entry1, entry2) -> entry2.getValue().compareTo(entry1.getValue()));
+
+        int rank = 1;
+        for (Map.Entry<UUID, Integer> entry : playerPoints) {
+            UUID playerId = entry.getKey();
+            int points = entry.getValue();
+
+            String playerName = Bukkit.getOfflinePlayer(playerId).getName();
+
+            Bukkit.getConsoleSender().sendMessage(String.format("Platz %d: %s - %d Punkte", rank, playerName, points));
+            rank++;
+        }
+
+        clockInventoryRepository.resetPlayerData();
+    }
 
     public boolean onCommand(@NotNull CommandSender sender, Command command, @NotNull String label, String[] args) {
         boolean retval;
@@ -110,10 +208,26 @@ public final class MobBattle extends JavaPlugin {
                 sender.sendMessage(Component.text("You do not have permission to use this command.", NamedTextColor.RED));
                 return false;
             }
-            sender.sendMessage(Component.text("GET READY, GAME WILL START NOW!!", NamedTextColor.GREEN));
-            sender.sendMessage(Component.text("GET READY, GAME WILL START NOW!!", NamedTextColor.AQUA));
-            sender.sendMessage(Component.text("GET READY, GAME WILL START NOW!!", NamedTextColor.DARK_AQUA));
+            Bukkit.getConsoleSender().sendMessage(Component.text("GET READY, GAME WILL START NOW!!", NamedTextColor.GREEN));
+            Bukkit.getConsoleSender().sendMessage(Component.text("GET READY, GAME WILL START NOW!!", NamedTextColor.AQUA));
+            Bukkit.getConsoleSender().sendMessage(Component.text("GET READY, GAME WILL START NOW!!", NamedTextColor.DARK_AQUA));
             startBattle();
+        }
+
+        if (command.getName().equalsIgnoreCase("endbattle")) {
+            if (!sender.hasPermission("mobbattle.endbattle")) {
+                sender.sendMessage(Component.text("You do not have permission to use this command.", NamedTextColor.RED));
+                return false;
+            }
+
+            if (!isBattleRunning) {
+                sender.sendMessage(Component.text("There is no ongoing battle to end.", NamedTextColor.RED));
+                return true;
+            }
+
+            endBattle();
+            Bukkit.getConsoleSender().sendMessage(Component.text("The battle has been ended.", NamedTextColor.GREEN));
+            return true;
         }
 
         return false;

@@ -18,16 +18,18 @@ import org.dlds.mobbattle.services.CategoryService;
 import java.util.*;
 
 public class ClockInventory implements Listener {
-    private final List<Category> categories;
-    private final Map<Integer, Inventory> pages = new HashMap<>();
+    private List<Category> categories;
     private final int pageSize = 54;
-    private List<MobCreature> killedMobs = new ArrayList<>();
+    private final Map<Integer, Inventory> pages;
+    private List<MobCreature> killedMobs;
     private int currentPoints;
     private int currentPage = 0;
 
     public ClockInventory() {
         CategoryService categoryService = new CategoryService();
         this.categories = categoryService.initializeCategories();
+        this.killedMobs = new ArrayList<>();
+        this.pages = new HashMap<>();
     }
 
     public int getCurrentPage() {
@@ -52,6 +54,10 @@ public class ClockInventory implements Listener {
 
     public void setKilledMobs(List<MobCreature> killedMobs) {
         this.killedMobs = killedMobs;
+    }
+
+    public void setCategories(List<Category> categories) {
+        this.categories = categories;
     }
 
     public int getPageSize() {
@@ -231,7 +237,7 @@ public class ClockInventory implements Listener {
 
             SkullMeta meta = (SkullMeta) mobHead.getItemMeta();
 
-            if (killedMobs.contains(mob)) {
+            if (mob.isDead()) {
                 meta.displayName(Component.text(mob.getName(), NamedTextColor.RED));
             } else {
                 meta.displayName(Component.text(mob.getName(), NamedTextColor.GREEN));

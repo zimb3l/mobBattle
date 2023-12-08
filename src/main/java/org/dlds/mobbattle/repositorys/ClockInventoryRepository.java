@@ -15,7 +15,7 @@ import java.util.stream.Collectors;
 
 public class ClockInventoryRepository {
     private static ClockInventoryRepository instance;
-    private final HashMap<UUID, ClockInventory> inventoryMap = new HashMap<>();
+    private HashMap<UUID, ClockInventory> inventoryMap = new HashMap<>();
     private final CategoryService categoryService;
     private File dataFolder;
 
@@ -27,10 +27,10 @@ public class ClockInventoryRepository {
         if (plugin != null) {
             dataFolder = plugin.getDataFolder();
             if (!dataFolder.exists() && !dataFolder.mkdirs()) {
-                Bukkit.getLogger().warning("Konnte das Datenverzeichnis für mobBattle nicht erstellen!");
+                Bukkit.getLogger().warning("Could not create directory for mobBattles!");
             }
         } else {
-            Bukkit.getLogger().warning("Plugin 'mobBattle' nicht gefunden!");
+            Bukkit.getLogger().warning("Plugin 'mobBattle' not found!");
         }
     }
 
@@ -43,6 +43,10 @@ public class ClockInventoryRepository {
 
     public ClockInventory getInventory(UUID playerId) {
         return inventoryMap.computeIfAbsent(playerId, k -> new ClockInventory());
+    }
+
+    public HashMap<UUID, ClockInventory> getInventoryMap() {
+        return inventoryMap;
     }
 
     public void saveAllInventories() {
@@ -58,13 +62,12 @@ public class ClockInventoryRepository {
         config.set("currentPoints", inventory.getCurrentPoints());
 
         List<String> killedMobs = inventory.getKilledMobs().stream().filter(MobCreature::isDead).map(MobCreature::getEntityType).map(Enum::name).collect(Collectors.toList());
-        Bukkit.getLogger().info("Saving killed mobs: " + killedMobs);
         config.set("killedMobs", killedMobs);
 
         try {
             config.save(file);
         } catch (IOException e) {
-            e.printStackTrace();
+            Bukkit.getLogger().warning("Could not save file for player id: " + playerId);
         }
     }
 
@@ -91,7 +94,6 @@ public class ClockInventoryRepository {
         inventory.setCurrentPoints(config.getInt("currentPoints", 0));
 
         List<String> killedMobsStrings = config.getStringList("killedMobs");
-        Bukkit.getLogger().info("Loading killed mobs: " + killedMobsStrings);
         List<MobCreature> killedMobsList = new ArrayList<>();
 
         List<Category> categories = categoryService.initializeCategories();
@@ -104,8 +106,21 @@ public class ClockInventoryRepository {
             }
         }
         inventory.setKilledMobs(killedMobsList);
-        Bukkit.getLogger().info("Loading killed mobs list in inventory: " + killedMobsList);
+        inventory.setCategories(categories);
 
         return inventory;
+    }
+
+    public void resetPlayerData() {
+        for (Map.Entry<UUID, ClockInventory> entry : inventoryMap.entrySet()) {
+            UUID playerId = entry.getKey();
+            ClockInventory inventory = entry.getValue();
+
+            inventory.setCurrentPoints(0);
+
+            inventory.getKilledMobs().clear();
+
+            saveClockInventory(playerId, inventory);
+        }
     }
 }
