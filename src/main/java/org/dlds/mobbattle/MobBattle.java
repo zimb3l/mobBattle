@@ -24,11 +24,12 @@ public final class MobBattle extends JavaPlugin {
         locationCalculator = new LocationCalculator();
         timerHandler = new TimerHandler();
 
-        // Create an instance of ClockInventory and register it as an event listener
         ClockInventoryEventHandler clockInventoryEventHandler = new ClockInventoryEventHandler();
         MobKillEventHandler mobKillEventHandler = new MobKillEventHandler();
         getServer().getPluginManager().registerEvents(clockInventoryEventHandler, this);
         getServer().getPluginManager().registerEvents(mobKillEventHandler, this);
+
+        clockInventoryRepository = ClockInventoryRepository.getInstance();
 
         clockInventoryRepository.loadAllInventories();
     }
