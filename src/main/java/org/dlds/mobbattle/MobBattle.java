@@ -30,13 +30,16 @@ public final class MobBattle extends JavaPlugin {
         getServer().getPluginManager().registerEvents(mobKillEventHandler, this);
 
         clockInventoryRepository = ClockInventoryRepository.getInstance();
-
+        Bukkit.getLogger().info("Loading all clock inventories!");
         clockInventoryRepository.loadAllInventories();
+        Bukkit.getLogger().info("Finished loading all clock inventories!");
     }
 
     @Override
     public void onDisable() {
+        Bukkit.getLogger().info("Saving all clock inventories!");
         clockInventoryRepository.saveAllInventories();
+        Bukkit.getLogger().info("Finished saving all clock inventories!");
     }
 
     public void startBattle() {

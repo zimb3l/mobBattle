@@ -58,6 +58,7 @@ public class ClockInventoryRepository {
         config.set("currentPoints", inventory.getCurrentPoints());
 
         List<String> killedMobs = inventory.getKilledMobs().stream().filter(MobCreature::isDead).map(MobCreature::getEntityType).map(Enum::name).collect(Collectors.toList());
+        Bukkit.getLogger().info("Saving killed mobs: " + killedMobs);
         config.set("killedMobs", killedMobs);
 
         try {
@@ -90,6 +91,7 @@ public class ClockInventoryRepository {
         inventory.setCurrentPoints(config.getInt("currentPoints", 0));
 
         List<String> killedMobsStrings = config.getStringList("killedMobs");
+        Bukkit.getLogger().info("Loading killed mobs: " + killedMobsStrings);
         List<MobCreature> killedMobsList = new ArrayList<>();
 
         List<Category> categories = categoryService.initializeCategories();
@@ -102,6 +104,7 @@ public class ClockInventoryRepository {
             }
         }
         inventory.setKilledMobs(killedMobsList);
+        Bukkit.getLogger().info("Loading killed mobs list in inventory: " + killedMobsList);
 
         return inventory;
     }

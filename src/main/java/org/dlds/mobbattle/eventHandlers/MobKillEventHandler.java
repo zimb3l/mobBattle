@@ -33,8 +33,6 @@ public class MobKillEventHandler implements Listener {
                 return;
             }
 
-            System.out.println("clockInventory onMobDeath: " + clockInventory.getCurrentPoints());
-
             Category category = clockInventory.getCategoryForEntityType(entityType);
 
             if (category == null) {
