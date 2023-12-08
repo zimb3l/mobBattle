@@ -1,4 +1,4 @@
-package org.dlds.mobbattle;
+package org.dlds.mobbattle.objects;
 
 import org.bukkit.inventory.ItemStack;
 
@@ -14,7 +14,7 @@ public class Category {
     private final List<ItemStack> luckyRewards;
     private final String base64HeadString;
 
-    public Category(int categoryNumber, int points, List<MobCreature> mobs, List<ItemStack> mainRewards, List<ItemStack> luckyRewards, String base64HeadString){
+    public Category(int categoryNumber, int points, List<MobCreature> mobs, List<ItemStack> mainRewards, List<ItemStack> luckyRewards, String base64HeadString) {
         this.categoryNumber = categoryNumber;
         this.points = points;
         this.mobs = mobs;
@@ -36,14 +36,14 @@ public class Category {
     }
 
     public List<ItemStack> getMainRewards() {
-        if(mainRewards == null){
+        if (mainRewards == null) {
             return new ArrayList<>();
         }
         return mainRewards;
     }
 
     public List<ItemStack> getLuckyRewards() {
-        if(luckyRewards == null){
+        if (luckyRewards == null) {
             return new ArrayList<>();
         }
         return luckyRewards;

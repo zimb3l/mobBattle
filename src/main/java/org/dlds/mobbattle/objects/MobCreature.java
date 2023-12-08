@@ -1,22 +1,22 @@
-package org.dlds.mobbattle;
+package org.dlds.mobbattle.objects;
 
 import org.bukkit.entity.Entity;
 import org.bukkit.entity.EntityType;
 
 public class MobCreature {
 
-    private EntityType entityType;
-    private String mobHead;
-    private String name;
+    private final EntityType entityType;
+    private final String mobHead;
+    private final String name;
     private boolean dead = false;
 
-    public MobCreature(String name, EntityType entityType, String mobHead){
+    public MobCreature(String name, EntityType entityType, String mobHead) {
         this.name = name;
         this.entityType = entityType;
         this.mobHead = mobHead;
     }
 
-    public void killedMob(){
+    public void killedMob() {
         this.dead = true;
     }
 

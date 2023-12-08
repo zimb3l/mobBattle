@@ -1,4 +1,4 @@
-package org.dlds.mobbattle;
+package org.dlds.mobbattle.eventHandlers;
 
 import net.kyori.adventure.text.Component;
 import net.kyori.adventure.text.serializer.legacy.LegacyComponentSerializer;
@@ -11,6 +11,8 @@ import org.bukkit.event.player.PlayerInteractEvent;
 import org.bukkit.inventory.Inventory;
 import org.bukkit.inventory.ItemStack;
 import org.bukkit.inventory.meta.ItemMeta;
+import org.dlds.mobbattle.objects.Category;
+import org.dlds.mobbattle.objects.ClockInventory;
 import org.dlds.mobbattle.repositorys.ClockInventoryRepository;
 
 import java.util.UUID;

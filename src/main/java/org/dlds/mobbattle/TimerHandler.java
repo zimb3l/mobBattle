@@ -9,6 +9,7 @@ import org.bukkit.scoreboard.Objective;
 import org.bukkit.scoreboard.Scoreboard;
 import org.bukkit.scoreboard.ScoreboardManager;
 import org.bukkit.scoreboard.Criteria;
+
 public class TimerHandler {
     int updateTimeMin = 30;
     private int localTime = updateTimeMin * 60;

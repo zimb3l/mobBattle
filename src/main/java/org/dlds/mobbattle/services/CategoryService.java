@@ -1,9 +1,11 @@
-package org.dlds.mobbattle;
+package org.dlds.mobbattle.services;
 
 import com.google.common.primitives.Ints;
 import org.bukkit.Material;
 import org.bukkit.entity.*;
 import org.bukkit.inventory.ItemStack;
+import org.dlds.mobbattle.objects.Category;
+import org.dlds.mobbattle.objects.MobCreature;
 
 import java.util.ArrayList;
 import java.util.HashMap;
@@ -17,12 +19,13 @@ public class CategoryService {
     private final int[] categoryPoints = new int[]{1, 3, 5, 10, 25, 50, 100, 150, 250};
     private final Map<Integer, String> base64HeadStrings = new HashMap<>();
     private final List<Category> categories = new ArrayList<>();
-    public List<Category> initializeCategories(){
+
+    public List<Category> initializeCategories() {
         initializeMobLists();
         initializeMainRewardLists();
         initializeLuckyRewardLists();
         initializeBase64HeadStrings();
-        for (int points: categoryPoints) {
+        for (int points : categoryPoints) {
             int categoryNumber = Ints.indexOf(categoryPoints, points) + 1;
             List<MobCreature> mobList = mobs.get(categoryNumber);
             List<ItemStack> mainRewardList = mainRewards.get(categoryNumber);
@@ -34,7 +37,7 @@ public class CategoryService {
         return categories;
     }
 
-    private void initializeBase64HeadStrings(){
+    private void initializeBase64HeadStrings() {
         base64HeadStrings.put(1, "eyJ0ZXh0dXJlcyI6eyJTS0lOIjp7InVybCI6Imh0dHA6Ly90ZXh0dXJlcy5taW5lY3JhZnQubmV0L3RleHR1cmUvNzFiYzJiY2ZiMmJkMzc1OWU2YjFlODZmYzdhNzk1ODVlMTEyN2RkMzU3ZmMyMDI4OTNmOWRlMjQxYmM5ZTUzMCJ9fX0=");
         base64HeadStrings.put(2, "eyJ0ZXh0dXJlcyI6eyJTS0lOIjp7InVybCI6Imh0dHA6Ly90ZXh0dXJlcy5taW5lY3JhZnQubmV0L3RleHR1cmUvNGNkOWVlZWU4ODM0Njg4ODFkODM4NDhhNDZiZjMwMTI0ODVjMjNmNzU3NTNiOGZiZTg0ODczNDE0MTk4NDcifX19");
         base64HeadStrings.put(3, "eyJ0ZXh0dXJlcyI6eyJTS0lOIjp7InVybCI6Imh0dHA6Ly90ZXh0dXJlcy5taW5lY3JhZnQubmV0L3RleHR1cmUvMWQ0ZWFlMTM5MzM4NjBhNmRmNWU4ZTk1NTY5M2I5NWE4YzNiMTVjMzZiOGI1ODc1MzJhYzA5OTZiYzM3ZTUifX19");
@@ -46,7 +49,7 @@ public class CategoryService {
         base64HeadStrings.put(9, "eyJ0ZXh0dXJlcyI6eyJTS0lOIjp7InVybCI6Imh0dHA6Ly90ZXh0dXJlcy5taW5lY3JhZnQubmV0L3RleHR1cmUvZTY3Y2FmNzU5MWIzOGUxMjVhODAxN2Q1OGNmYzY0MzNiZmFmODRjZDQ5OWQ3OTRmNDFkMTBiZmYyZTViODQwIn19fQ==");
     }
 
-    private void initializeMainRewardLists(){
+    private void initializeMainRewardLists() {
         List<ItemStack> categoryOneMain = new ArrayList<>();
         categoryOneMain.add(new ItemStack(Material.IRON_INGOT, 1));
         mainRewards.put(1, categoryOneMain);
@@ -90,7 +93,7 @@ public class CategoryService {
         mainRewards.put(9, categoryNineMain);
     }
 
-    private void initializeLuckyRewardLists(){
+    private void initializeLuckyRewardLists() {
         List<ItemStack> categoryOneLucky = new ArrayList<>();
         categoryOneLucky.add(new ItemStack(Material.OAK_LOG, 2));
         luckyRewards.put(1, categoryOneLucky);
@@ -133,13 +136,13 @@ public class CategoryService {
         luckyRewards.put(9, categoryNineLucky);
     }
 
-    private void initializeMobLists(){
+    private void initializeMobLists() {
         List<MobCreature> categoryOne = new ArrayList<>();
-        categoryOne.add(new MobCreature("Cow", EntityType.COW,     "eyJ0ZXh0dXJlcyI6eyJTS0lOIjp7InVybCI6Imh0dHA6Ly90ZXh0dXJlcy5taW5lY3JhZnQubmV0L3RleHR1cmUvZDY1NTE4NDA5NTVmNTI0MzY3NTgwZjExYjM1MjI4OTM4YjY3ODYzOTdhOGYyZThjOGNjNmIwZWIwMWI1ZGIzZCJ9fX0="));
-        categoryOne.add(new MobCreature("Sheep", EntityType.SHEEP,   "eyJ0ZXh0dXJlcyI6eyJTS0lOIjp7InVybCI6Imh0dHA6Ly90ZXh0dXJlcy5taW5lY3JhZnQubmV0L3RleHR1cmUvMzBmNTAzOTRjNmQ3ZGJjMDNlYTU5ZmRmNTA0MDIwZGM1ZDY1NDhmOWQzYmM5ZGNhYzg5NmJiNWNhMDg1ODdhIn19fQ=="));
-        categoryOne.add(new MobCreature("Pig", EntityType.PIG,     "eyJ0ZXh0dXJlcyI6eyJTS0lOIjp7InVybCI6Imh0dHA6Ly90ZXh0dXJlcy5taW5lY3JhZnQubmV0L3RleHR1cmUvYmVlODUxNDg5MmYzZDc4YTMyZTg0NTZmY2JiOGM2MDgxZTIxYjI0NmQ4MmYzOThiZDk2OWZlYzE5ZDNjMjdiMyJ9fX0="));
+        categoryOne.add(new MobCreature("Cow", EntityType.COW, "eyJ0ZXh0dXJlcyI6eyJTS0lOIjp7InVybCI6Imh0dHA6Ly90ZXh0dXJlcy5taW5lY3JhZnQubmV0L3RleHR1cmUvZDY1NTE4NDA5NTVmNTI0MzY3NTgwZjExYjM1MjI4OTM4YjY3ODYzOTdhOGYyZThjOGNjNmIwZWIwMWI1ZGIzZCJ9fX0="));
+        categoryOne.add(new MobCreature("Sheep", EntityType.SHEEP, "eyJ0ZXh0dXJlcyI6eyJTS0lOIjp7InVybCI6Imh0dHA6Ly90ZXh0dXJlcy5taW5lY3JhZnQubmV0L3RleHR1cmUvMzBmNTAzOTRjNmQ3ZGJjMDNlYTU5ZmRmNTA0MDIwZGM1ZDY1NDhmOWQzYmM5ZGNhYzg5NmJiNWNhMDg1ODdhIn19fQ=="));
+        categoryOne.add(new MobCreature("Pig", EntityType.PIG, "eyJ0ZXh0dXJlcyI6eyJTS0lOIjp7InVybCI6Imh0dHA6Ly90ZXh0dXJlcy5taW5lY3JhZnQubmV0L3RleHR1cmUvYmVlODUxNDg5MmYzZDc4YTMyZTg0NTZmY2JiOGM2MDgxZTIxYjI0NmQ4MmYzOThiZDk2OWZlYzE5ZDNjMjdiMyJ9fX0="));
         categoryOne.add(new MobCreature("Chicken", EntityType.CHICKEN, "eyJ0ZXh0dXJlcyI6eyJTS0lOIjp7InVybCI6Imh0dHA6Ly90ZXh0dXJlcy5taW5lY3JhZnQubmV0L3RleHR1cmUvMTYzODQ2OWE1OTljZWVmNzIwNzUzNzYwMzI0OGE5YWIxMWZmNTkxZmQzNzhiZWE0NzM1YjM0NmE3ZmFlODkzIn19fQ=="));
-        categoryOne.add(new MobCreature("Squid", EntityType.SQUID,   "eyJ0ZXh0dXJlcyI6eyJTS0lOIjp7InVybCI6Imh0dHA6Ly90ZXh0dXJlcy5taW5lY3JhZnQubmV0L3RleHR1cmUvNDY0YmRjNmY2MDA2NTY1MTFiZWY1OTZjMWExNmFhYjFkM2Y1ZGJhYWU4YmVlMTlkNWMwNGRlMGRiMjFjZTkyYyJ9fX0="));
+        categoryOne.add(new MobCreature("Squid", EntityType.SQUID, "eyJ0ZXh0dXJlcyI6eyJTS0lOIjp7InVybCI6Imh0dHA6Ly90ZXh0dXJlcy5taW5lY3JhZnQubmV0L3RleHR1cmUvNDY0YmRjNmY2MDA2NTY1MTFiZWY1OTZjMWExNmFhYjFkM2Y1ZGJhYWU4YmVlMTlkNWMwNGRlMGRiMjFjZTkyYyJ9fX0="));
         mobs.put(1, categoryOne);
 
         List<MobCreature> categoryTwo = new ArrayList<>();

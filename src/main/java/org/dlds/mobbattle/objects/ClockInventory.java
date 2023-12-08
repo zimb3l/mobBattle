@@ -1,23 +1,19 @@
-package org.dlds.mobbattle;
+package org.dlds.mobbattle.objects;
 
 import net.kyori.adventure.text.Component;
 import net.kyori.adventure.text.format.NamedTextColor;
-import net.kyori.adventure.text.serializer.legacy.LegacyComponentSerializer;
 import org.bukkit.Bukkit;
 import org.bukkit.Material;
-import org.bukkit.enchantments.Enchantment;
 import org.bukkit.entity.EntityType;
 import org.bukkit.entity.Player;
-import org.bukkit.event.EventHandler;
 import org.bukkit.event.Listener;
-import org.bukkit.event.inventory.InventoryClickEvent;
-import org.bukkit.event.player.PlayerInteractEvent;
 import org.bukkit.inventory.Inventory;
 import org.bukkit.inventory.ItemStack;
 import org.bukkit.inventory.meta.ItemMeta;
 import org.bukkit.inventory.meta.SkullMeta;
 import com.destroystokyo.paper.profile.PlayerProfile;
 import com.destroystokyo.paper.profile.ProfileProperty;
+import org.dlds.mobbattle.services.CategoryService;
 
 import java.util.UUID;
 
@@ -27,9 +23,9 @@ public class ClockInventory implements Listener {
     private final List<Category> categories;
     private final List<MobCreature> killedMobs = new ArrayList<>();
     private final Map<Integer, Inventory> pages = new HashMap<>();
+    private final int pageSize = 54;
     private int currentPoints;
     private int currentPage = 0;
-    private final int pageSize = 54;
 
     public ClockInventory() {
         CategoryService categoryService = new CategoryService();
@@ -38,6 +34,10 @@ public class ClockInventory implements Listener {
 
     public int getCurrentPage() {
         return currentPage;
+    }
+
+    public void setCurrentPage(int currentPage) {
+        this.currentPage = currentPage;
     }
 
     public Map<Integer, Inventory> getPages() {
@@ -56,27 +56,25 @@ public class ClockInventory implements Listener {
         return pageSize;
     }
 
+    public int getCurrentPoints() {
+        return currentPoints;
+    }
+
     public void setCurrentPoints(int currentPoints) {
         this.currentPoints = currentPoints;
     }
 
-    public void setCurrentPage(int currentPage) {
-        this.currentPage = currentPage;
-    }
-
-    public Category getCategoryForEntityType(EntityType entityType){
-        for (Category category: categories) {
-            for (MobCreature mobCreature: category.getMobs()) {
-                if(mobCreature.getEntityType().equals(entityType)){
+    public Category getCategoryForEntityType(EntityType entityType) {
+        for (Category category : categories) {
+            for (MobCreature mobCreature : category.getMobs()) {
+                if (mobCreature.getEntityType().equals(entityType)) {
                     return category;
                 }
             }
         }
         return null;
     }
-    public int getCurrentPoints() {
-        return currentPoints;
-    }
+
     public ItemStack getCustomSkull(String base64) {
         ItemStack skull = new ItemStack(Material.PLAYER_HEAD);
         SkullMeta skullMeta = (SkullMeta) skull.getItemMeta();
@@ -96,60 +94,9 @@ public class ClockInventory implements Listener {
         glassPane.setItemMeta(meta);
 
         for (int i = 0; i < inv.getSize(); i++) {
-            if (inv.getItem(i) == null || inv.getItem(i).getType() == Material.AIR) {
+            if (inv.getItem(i) == null || Objects.requireNonNull(inv.getItem(i)).getType() == Material.AIR) {
                 inv.setItem(i, glassPane);
             }
-        }
-    }
-
-    public void initializePages(Player player){
-
-        String previousPageBase64 = "eyJ0ZXh0dXJlcyI6eyJTS0lOIjp7InVybCI6Imh0dHA6Ly90ZXh0dXJlcy5taW5lY3JhZnQubmV0L3RleHR1cmUvYmQ2OWUwNmU1ZGFkZmQ4NGU1ZjNkMWMyMTA2M2YyNTUzYjJmYTk0NWVlMWQ0ZDcxNTJmZGM1NDI1YmMxMmE5In19fQ==";
-        String nextPageBase64 = "eyJ0ZXh0dXJlcyI6eyJTS0lOIjp7InVybCI6Imh0dHA6Ly90ZXh0dXJlcy5taW5lY3JhZnQubmV0L3RleHR1cmUvMTliZjMyOTJlMTI2YTEwNWI1NGViYTcxM2FhMWIxNTJkNTQxYTFkODkzODgyOWM1NjM2NGQxNzhlZDIyYmYifX19";
-
-        Inventory pointsPage = Bukkit.createInventory(null, pageSize, Component.text("Player Points", NamedTextColor.BLACK));
-
-        for (Category category : categories) {
-
-            ItemStack categoryHead = getCustomSkull(category.getBase64HeadString());
-            SkullMeta meta = (SkullMeta) categoryHead.getItemMeta();
-            meta.displayName(Component.text("Category: " + category.getCategoryNumber(), NamedTextColor.GREEN));
-
-            categoryHead.setItemMeta(meta);
-
-            if(category.getCategoryNumber() < 5){
-                pointsPage.setItem((20 + category.getCategoryNumber()), categoryHead);
-            } else {
-                pointsPage.setItem((24 + category.getCategoryNumber()), categoryHead);
-            }
-
-        }
-
-        ItemStack totalPointsHead = new ItemStack(Material.PLAYER_HEAD, 1);
-        SkullMeta meta = (SkullMeta) totalPointsHead.getItemMeta();
-        meta.setOwningPlayer(player);
-        totalPointsHead.setItemMeta(meta);
-        ItemMeta totalPointsMeta = totalPointsHead.getItemMeta();
-        totalPointsMeta.displayName(Component.text("Total Points: " + currentPoints, NamedTextColor.GOLD));
-        totalPointsHead.setItemMeta(totalPointsMeta);
-        pointsPage.setItem(20, totalPointsHead);
-
-        addNavigationItem(pointsPage, nextPageBase64, "Next Site", pageSize - 1);
-        fillEmptySlotsWithGlassPanes(pointsPage);
-        pages.put(0, pointsPage);
-
-        int pageIndex = 1;
-        for (Category category : categories) {
-            Inventory categoryPage = Bukkit.createInventory(null, pageSize, Component.text("Category: " + category.getCategoryNumber(), NamedTextColor.BLACK));
-            initializeCategoryPage(categoryPage, category);
-            addNavigationItem(categoryPage, previousPageBase64, "Previous Site", 45);
-            if (pageIndex < categories.size()) {
-                addNavigationItem(categoryPage, nextPageBase64, "Next Site", pageSize - 1);
-            }
-            addPlayerHeadToPointsPage(categoryPage, player);
-            fillEmptySlotsWithGlassPanes(categoryPage);
-            pages.put(pageIndex, categoryPage);
-            pageIndex++;
         }
     }
 
@@ -170,10 +117,10 @@ public class ClockInventory implements Listener {
         pointsPage.setItem(pageSize - 5, playerHead);
     }
 
-    private String convertItemNameToString(ItemStack reward){
+    private String convertItemNameToString(ItemStack reward) {
         String rewardName = "";
 
-        switch (reward.getType()){
+        switch (reward.getType()) {
             case IRON_INGOT:
                 rewardName += "Iron Ingot";
                 break;
@@ -212,25 +159,80 @@ public class ClockInventory implements Listener {
         return rewardName;
     }
 
+    public void initializePages(Player player) {
+
+        String previousPageBase64 = "eyJ0ZXh0dXJlcyI6eyJTS0lOIjp7InVybCI6Imh0dHA6Ly90ZXh0dXJlcy5taW5lY3JhZnQubmV0L3RleHR1cmUvYmQ2OWUwNmU1ZGFkZmQ4NGU1ZjNkMWMyMTA2M2YyNTUzYjJmYTk0NWVlMWQ0ZDcxNTJmZGM1NDI1YmMxMmE5In19fQ==";
+        String nextPageBase64 = "eyJ0ZXh0dXJlcyI6eyJTS0lOIjp7InVybCI6Imh0dHA6Ly90ZXh0dXJlcy5taW5lY3JhZnQubmV0L3RleHR1cmUvMTliZjMyOTJlMTI2YTEwNWI1NGViYTcxM2FhMWIxNTJkNTQxYTFkODkzODgyOWM1NjM2NGQxNzhlZDIyYmYifX19";
+
+        Inventory pointsPage = Bukkit.createInventory(null, pageSize, Component.text("Player Points", NamedTextColor.BLACK));
+
+        for (Category category : categories) {
+            boolean allMobsKilled = new HashSet<>(killedMobs).containsAll(category.getMobs());
+
+            ItemStack categoryHead = getCustomSkull(category.getBase64HeadString());
+            SkullMeta meta = (SkullMeta) categoryHead.getItemMeta();
+
+            NamedTextColor textColor = allMobsKilled ? NamedTextColor.RED : NamedTextColor.GREEN;
+            meta.displayName(Component.text("Category: " + category.getCategoryNumber(), textColor));
+
+            categoryHead.setItemMeta(meta);
+
+            if (category.getCategoryNumber() < 5) {
+                pointsPage.setItem((20 + category.getCategoryNumber()), categoryHead);
+            } else {
+                pointsPage.setItem((24 + category.getCategoryNumber()), categoryHead);
+            }
+
+        }
+
+        ItemStack totalPointsHead = new ItemStack(Material.PLAYER_HEAD, 1);
+        SkullMeta meta = (SkullMeta) totalPointsHead.getItemMeta();
+        meta.setOwningPlayer(player);
+        totalPointsHead.setItemMeta(meta);
+        ItemMeta totalPointsMeta = totalPointsHead.getItemMeta();
+        totalPointsMeta.displayName(Component.text("Total Points: " + currentPoints, NamedTextColor.GOLD));
+        totalPointsHead.setItemMeta(totalPointsMeta);
+        pointsPage.setItem(20, totalPointsHead);
+
+        addNavigationItem(pointsPage, nextPageBase64, "Next Site", pageSize - 1);
+        fillEmptySlotsWithGlassPanes(pointsPage);
+        pages.put(0, pointsPage);
+
+        int pageIndex = 1;
+        for (Category category : categories) {
+            Inventory categoryPage = Bukkit.createInventory(null, pageSize, Component.text("Category: " + category.getCategoryNumber(), NamedTextColor.BLACK));
+            initializeCategoryPage(categoryPage, category);
+            addNavigationItem(categoryPage, previousPageBase64, "Previous Site", 45);
+            if (pageIndex < categories.size()) {
+                addNavigationItem(categoryPage, nextPageBase64, "Next Site", pageSize - 1);
+            }
+            addPlayerHeadToPointsPage(categoryPage, player);
+            fillEmptySlotsWithGlassPanes(categoryPage);
+            pages.put(pageIndex, categoryPage);
+            pageIndex++;
+        }
+    }
+
     private void initializeCategoryPage(Inventory page, Category category) {
         int slot = 10;
         int mobsInRow = 0;
         for (MobCreature mob : category.getMobs()) {
             ItemStack mobHead;
 
-            if(mob.getMobHead() != null && !mob.getMobHead().isEmpty() && !mob.getName().equals("Ender Dragon")){
+            if (mob.getMobHead() != null && !mob.getMobHead().isEmpty() && !mob.getName().equals("Ender Dragon")) {
                 mobHead = getCustomSkull(mob.getMobHead());
-            } else if(mob.getName().equals("Ender Dragon")){
+            } else if (mob.getName().equals("Ender Dragon")) {
                 mobHead = new ItemStack(Material.DRAGON_HEAD);
             } else {
                 mobHead = new ItemStack(Material.PLAYER_HEAD);
             }
 
             SkullMeta meta = (SkullMeta) mobHead.getItemMeta();
-            meta.displayName(Component.text(mob.getName(), NamedTextColor.GREEN));
 
             if (killedMobs.contains(mob)) {
-                mobHead.addUnsafeEnchantment(Enchantment.LUCK, 1);
+                meta.displayName(Component.text(mob.getName(), NamedTextColor.RED));
+            } else {
+                meta.displayName(Component.text(mob.getName(), NamedTextColor.GREEN));
             }
 
             mobHead.setItemMeta(meta);
@@ -238,7 +240,7 @@ public class ClockInventory implements Listener {
 
             mobsInRow++;
 
-            if(mobsInRow == 7){
+            if (mobsInRow == 7) {
                 mobsInRow = 0;
                 slot += 3;
             } else {
@@ -271,16 +273,16 @@ public class ClockInventory implements Listener {
         page.setItem(pageSize - 3, luckyRewardsItem);
     }
 
-    public boolean updateMobKill(EntityType entityType){
+    public boolean updateMobKill(EntityType entityType) {
 
-        if(killedMobs.stream().anyMatch(x -> x.getEntityType() == entityType)){
+        if (killedMobs.stream().anyMatch(x -> x.getEntityType() == entityType)) {
             return false;
         }
 
-        for (Category category: categories) {
-            for (MobCreature mobCreature: category.getMobs()) {
-                if(mobCreature.getEntityType().equals(entityType)){
-                    if(mobCreature.isDead()){
+        for (Category category : categories) {
+            for (MobCreature mobCreature : category.getMobs()) {
+                if (mobCreature.getEntityType().equals(entityType)) {
+                    if (mobCreature.isDead()) {
                         return false;
                     }
                     mobCreature.killedMob();
@@ -293,10 +295,7 @@ public class ClockInventory implements Listener {
         return true;
     }
 
-    public void updatePoints(int points){
-        System.out.println("Points: " + points);
-        System.out.println("Points before update: " + currentPoints);
+    public void updatePoints(int points) {
         this.currentPoints += points;
-        System.out.println("Points after update: " + currentPoints);
     }
 }

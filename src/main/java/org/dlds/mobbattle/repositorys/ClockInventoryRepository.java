@@ -1,6 +1,6 @@
 package org.dlds.mobbattle.repositorys;
 
-import org.dlds.mobbattle.ClockInventory;
+import org.dlds.mobbattle.objects.ClockInventory;
 
 import java.util.HashMap;
 import java.util.UUID;
@@ -9,7 +9,8 @@ public class ClockInventoryRepository {
     private static ClockInventoryRepository instance;
     private final HashMap<UUID, ClockInventory> inventoryMap = new HashMap<>();
 
-    private ClockInventoryRepository() {}
+    private ClockInventoryRepository() {
+    }
 
     public static synchronized ClockInventoryRepository getInstance() {
         if (instance == null) {
