@@ -1,19 +1,21 @@
 package org.dlds.mobbattle;
 
-import org.bukkit.Bukkit;
-import org.bukkit.plugin.java.JavaPlugin;
 import net.kyori.adventure.text.Component;
 import net.kyori.adventure.text.format.NamedTextColor;
+import org.bukkit.Bukkit;
+import org.bukkit.World;
 import org.bukkit.command.Command;
 import org.bukkit.command.CommandSender;
-import org.bukkit.World;
+import org.bukkit.plugin.java.JavaPlugin;
 import org.dlds.mobbattle.eventHandlers.ClockInventoryEventHandler;
 import org.dlds.mobbattle.eventHandlers.MobKillEventHandler;
+import org.dlds.mobbattle.repositorys.ClockInventoryRepository;
 import org.jetbrains.annotations.NotNull;
 
 public final class MobBattle extends JavaPlugin {
     private LocationCalculator locationCalculator;
     private TimerHandler timerHandler;
+    private ClockInventoryRepository clockInventoryRepository;
 
 
     @Override
@@ -27,11 +29,13 @@ public final class MobBattle extends JavaPlugin {
         MobKillEventHandler mobKillEventHandler = new MobKillEventHandler();
         getServer().getPluginManager().registerEvents(clockInventoryEventHandler, this);
         getServer().getPluginManager().registerEvents(mobKillEventHandler, this);
+
+        clockInventoryRepository.loadAllInventories();
     }
 
     @Override
     public void onDisable() {
-        // Plugin shutdown logic
+        clockInventoryRepository.saveAllInventories();
     }
 
     public void startBattle() {

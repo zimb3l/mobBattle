@@ -2,7 +2,7 @@ package org.dlds.mobbattle.services;
 
 import com.google.common.primitives.Ints;
 import org.bukkit.Material;
-import org.bukkit.entity.*;
+import org.bukkit.entity.EntityType;
 import org.bukkit.inventory.ItemStack;
 import org.dlds.mobbattle.objects.Category;
 import org.dlds.mobbattle.objects.MobCreature;

@@ -1,5 +1,7 @@
 package org.dlds.mobbattle.objects;
 
+import com.destroystokyo.paper.profile.PlayerProfile;
+import com.destroystokyo.paper.profile.ProfileProperty;
 import net.kyori.adventure.text.Component;
 import net.kyori.adventure.text.format.NamedTextColor;
 import org.bukkit.Bukkit;
@@ -11,19 +13,15 @@ import org.bukkit.inventory.Inventory;
 import org.bukkit.inventory.ItemStack;
 import org.bukkit.inventory.meta.ItemMeta;
 import org.bukkit.inventory.meta.SkullMeta;
-import com.destroystokyo.paper.profile.PlayerProfile;
-import com.destroystokyo.paper.profile.ProfileProperty;
 import org.dlds.mobbattle.services.CategoryService;
-
-import java.util.UUID;
 
 import java.util.*;
 
 public class ClockInventory implements Listener {
     private final List<Category> categories;
-    private final List<MobCreature> killedMobs = new ArrayList<>();
     private final Map<Integer, Inventory> pages = new HashMap<>();
     private final int pageSize = 54;
+    private List<MobCreature> killedMobs = new ArrayList<>();
     private int currentPoints;
     private int currentPage = 0;
 
@@ -50,6 +48,10 @@ public class ClockInventory implements Listener {
 
     public List<MobCreature> getKilledMobs() {
         return killedMobs;
+    }
+
+    public void setKilledMobs(List<MobCreature> killedMobs) {
+        this.killedMobs = killedMobs;
     }
 
     public int getPageSize() {

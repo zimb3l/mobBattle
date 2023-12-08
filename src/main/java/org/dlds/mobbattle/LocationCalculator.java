@@ -10,9 +10,9 @@ import java.util.ArrayList;
 import java.util.List;
 
 public class LocationCalculator {
+    private final List<LocationSafetyPair> spawnLocations = new ArrayList<>();
     int locationCount = 24; // Defines number of calculated spawn locations
     int startDistance = 500; // Defines distance from spawn (0,0)
-    private final List<LocationSafetyPair> spawnLocations = new ArrayList<>();
 
     public int getCurrentPlayerCount() {
         return Bukkit.getServer().getOnlinePlayers().size();
@@ -35,23 +35,12 @@ public class LocationCalculator {
         }
     }
 
-    private static class LocationSafetyPair {
-        public Location location;
-        public boolean isSafe;
-
-        public LocationSafetyPair(Location location, boolean isSafe) {
-            this.location = location;
-            this.isSafe = isSafe;
-        }
-    }
-
     private boolean isLocationSafe(Location location, World world) {
         Biome biome = world.getBiome(location.getBlockX(), location.getBlockY(), location.getBlockZ());
         boolean isWater = world.getBlockAt(location.getBlockX(), location.getBlockY() - 1, location.getBlockZ()).isLiquid();
 
         return biome != Biome.OCEAN && biome != Biome.DEEP_OCEAN && !isWater;
     }
-
 
     public void assignPlayerSpawns() {
         int playerCount = getCurrentPlayerCount();
@@ -88,5 +77,15 @@ public class LocationCalculator {
             }
         }
         return null; // No safe location found
+    }
+
+    private static class LocationSafetyPair {
+        public Location location;
+        public boolean isSafe;
+
+        public LocationSafetyPair(Location location, boolean isSafe) {
+            this.location = location;
+            this.isSafe = isSafe;
+        }
     }
 }

@@ -4,19 +4,15 @@ import org.bukkit.Bukkit;
 import org.bukkit.entity.Player;
 import org.bukkit.plugin.Plugin;
 import org.bukkit.scheduler.BukkitRunnable;
-import org.bukkit.scoreboard.DisplaySlot;
-import org.bukkit.scoreboard.Objective;
-import org.bukkit.scoreboard.Scoreboard;
-import org.bukkit.scoreboard.ScoreboardManager;
-import org.bukkit.scoreboard.Criteria;
+import org.bukkit.scoreboard.*;
 
 public class TimerHandler {
-    int updateTimeMin = 30;
-    private int localTime = updateTimeMin * 60;
-    final String name_string = "mobBattle";
     static final Criteria criteria = Criteria.DUMMY;
+    final String name_string = "mobBattle";
     final String display_name_string = "Mob Battle";
+    int updateTimeMin = 30;
     net.kyori.adventure.text.Component display_name = net.kyori.adventure.text.Component.text(display_name_string);
+    private int localTime = updateTimeMin * 60;
 
     void setupScoreboardDisplay() {
         ScoreboardManager manager = Bukkit.getScoreboardManager();

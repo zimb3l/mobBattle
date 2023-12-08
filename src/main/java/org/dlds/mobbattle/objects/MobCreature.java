@@ -1,6 +1,5 @@
 package org.dlds.mobbattle.objects;
 
-import org.bukkit.entity.Entity;
 import org.bukkit.entity.EntityType;
 
 public class MobCreature {
