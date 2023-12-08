@@ -27,7 +27,7 @@ public final class MobBattle extends JavaPlugin {
     private TimerHandler timerHandler;
     private ClockInventoryRepository clockInventoryRepository;
     private MobBattleRepository mobBattleRepository;
-    private boolean isBattleRunning = false;
+    private boolean isBattleRunning;
 
     @Override
     public void onEnable() {
@@ -71,6 +71,7 @@ public final class MobBattle extends JavaPlugin {
                         player.removePotionEffect(PotionEffectType.SLOW);
                     }
 
+                    isBattleRunning = true;
                     cancel();
                     return;
                 }
@@ -117,7 +118,6 @@ public final class MobBattle extends JavaPlugin {
         locationCalculator.assignPlayerSpawns();
         initiateStartSequence();
         timerHandler.setupScoreboardDisplay();
-        isBattleRunning = true;
     }
 
     public void endBattle() {
