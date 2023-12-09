@@ -181,7 +181,12 @@ public class ClockInventory implements Listener {
             SkullMeta meta = (SkullMeta) categoryHead.getItemMeta();
 
             NamedTextColor textColor = allMobsKilled ? NamedTextColor.RED : NamedTextColor.GREEN;
-            meta.displayName(Component.text("Category: " + category.getCategoryNumber(), textColor));
+            if(category.getPoints() > 1){
+                meta.displayName(Component.text("Category: " + category.getCategoryNumber()+ " | " + category.getPoints() + " Points", textColor));
+            } else {
+                meta.displayName(Component.text("Category: " + category.getCategoryNumber()+ " | " + category.getPoints() + " Point", textColor));
+            }
+
 
             categoryHead.setItemMeta(meta);
 

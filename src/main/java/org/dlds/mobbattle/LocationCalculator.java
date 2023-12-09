@@ -11,8 +11,8 @@ import java.util.List;
 
 public class LocationCalculator {
     private final List<LocationSafetyPair> spawnLocations = new ArrayList<>();
-    int locationCount = 24; // Defines number of calculated spawn locations
-    int startDistance = 500; // Defines distance from spawn (0,0)
+    int locationCount = 24;
+    int startDistance = 500;
 
     public int getCurrentPlayerCount() {
         return Bukkit.getServer().getOnlinePlayers().size();
@@ -62,11 +62,11 @@ public class LocationCalculator {
     }
 
     private LocationSafetyPair getSafeLocation(int startIndex) {
-        // Maximum distance to check from the original index
+
         int maxDistance = 3;
 
         for (int distance = 0; distance <= maxDistance; distance++) {
-            // Check at the current distance before and after the start index
+
             for (int direction = -1; direction <= 1; direction += 2) {
                 int checkIndex = (startIndex + distance * direction + locationCount) % locationCount;
                 LocationSafetyPair locationPair = spawnLocations.get(checkIndex);
@@ -76,7 +76,7 @@ public class LocationCalculator {
                 }
             }
         }
-        return null; // No safe location found
+        return null;
     }
 
     private static class LocationSafetyPair {

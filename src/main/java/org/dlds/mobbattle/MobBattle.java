@@ -3,10 +3,7 @@ package org.dlds.mobbattle;
 import net.kyori.adventure.text.Component;
 import net.kyori.adventure.text.format.NamedTextColor;
 import net.kyori.adventure.title.Title;
-import org.bukkit.Bukkit;
-import org.bukkit.GameMode;
-import org.bukkit.Material;
-import org.bukkit.World;
+import org.bukkit.*;
 import org.bukkit.command.Command;
 import org.bukkit.command.CommandSender;
 import org.bukkit.entity.Player;
@@ -38,7 +35,7 @@ public final class MobBattle extends JavaPlugin {
     public void onEnable() {
         Bukkit.getServer().broadcast(Component.text("Welcome to Minecraft mobBattle!", NamedTextColor.AQUA));
         locationCalculator = new LocationCalculator();
-        timerHandler = new TimerHandler();
+        timerHandler = new TimerHandler(this);
 
         ClockInventoryEventHandler clockInventoryEventHandler = new ClockInventoryEventHandler();
         MobKillEventHandler mobKillEventHandler = new MobKillEventHandler();
@@ -83,6 +80,9 @@ public final class MobBattle extends JavaPlugin {
                         player.removePotionEffect(PotionEffectType.SATURATION);
                         player.removePotionEffect(PotionEffectType.REGENERATION);
                         player.removePotionEffect(PotionEffectType.HEALTH_BOOST);
+                        player.removePotionEffect(PotionEffectType.HEAL);
+
+                        player.playSound(player.getLocation(), Sound.ENTITY_ENDER_DRAGON_GROWL, 1.0F, 1.0F);
                     }
 
                     isBattleRunning = true;
@@ -107,6 +107,7 @@ public final class MobBattle extends JavaPlugin {
                         player.addPotionEffect(new PotionEffect(PotionEffectType.SATURATION, 200, 255, false, false));
                         player.addPotionEffect(new PotionEffect(PotionEffectType.REGENERATION, 200, 255, false, false));
                         player.addPotionEffect(new PotionEffect(PotionEffectType.HEALTH_BOOST, 200, 255, false, false));
+                        player.addPotionEffect(new PotionEffect(PotionEffectType.HEAL, 200, 255, false, false));
                     }
 
                     if (countdown == 3) {
@@ -115,13 +116,14 @@ public final class MobBattle extends JavaPlugin {
                         ItemStack clock = new ItemStack(Material.CLOCK, 1);
                         player.getInventory().setItem(8, clock);
                     }
+
+                    player.playSound(player.getLocation(), Sound.BLOCK_NOTE_BLOCK_PLING, 1.0F, 1.0F + (0.1F * countdown));
                 }
 
                 countdown--;
             }
         }.runTaskTimer(this, 0, 20);
     }
-
 
     private Component getCountdownTitle(int countdown) {
         NamedTextColor color;
@@ -171,7 +173,8 @@ public final class MobBattle extends JavaPlugin {
             int points = entry.getValue();
 
             String playerName = Bukkit.getOfflinePlayer(playerId).getName();
-            Bukkit.getServer().broadcast(Component.text(String.format("Platz %d: %s - %d Punkte", rank, playerName, points)));
+            NamedTextColor color = (rank == 1) ? NamedTextColor.GOLD : (rank == 2) ? NamedTextColor.GRAY : (rank == 3) ? NamedTextColor.DARK_RED : NamedTextColor.WHITE;
+            Bukkit.getServer().broadcast(Component.text(String.format("Platz %d: %s - %d Punkte", rank, playerName, points), color));
             rank++;
         }
 
@@ -238,9 +241,9 @@ public final class MobBattle extends JavaPlugin {
                 return false;
             }
             startBattle();
-            Bukkit.getServer().broadcast(Component.text("say GET READY, GAME WILL START NOW!!", NamedTextColor.GREEN));
-            Bukkit.getServer().broadcast(Component.text("say GET READY, GAME WILL START NOW!!", NamedTextColor.AQUA));
-            Bukkit.getServer().broadcast(Component.text("say GET READY, GAME WILL START NOW!!", NamedTextColor.DARK_AQUA));
+            Bukkit.getServer().broadcast(Component.text("GET READY, GAME WILL START NOW!!", NamedTextColor.GREEN));
+            Bukkit.getServer().broadcast(Component.text("GET READY, GAME WILL START NOW!!", NamedTextColor.AQUA));
+            Bukkit.getServer().broadcast(Component.text("GET READY, GAME WILL START NOW!!", NamedTextColor.DARK_AQUA));
         }
 
         if (command.getName().equalsIgnoreCase("endbattle")) {
