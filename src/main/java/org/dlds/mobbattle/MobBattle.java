@@ -149,6 +149,7 @@ public final class MobBattle extends JavaPlugin {
         locationCalculator.calculateSpawnLocations(world);
         locationCalculator.assignPlayerSpawns();
         initiateStartSequence(world);
+        clockInventoryRepository.initializeInventoriesForOnlinePlayers();
         timerHandler.setupScoreboardDisplay();
     }
 

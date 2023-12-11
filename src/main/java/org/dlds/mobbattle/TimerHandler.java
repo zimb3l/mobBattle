@@ -1,7 +1,6 @@
 package org.dlds.mobbattle;
 
 import net.kyori.adventure.text.Component;
-import net.kyori.adventure.text.format.NamedTextColor;
 import org.bukkit.Bukkit;
 import org.bukkit.entity.Player;
 import org.bukkit.plugin.java.JavaPlugin;
@@ -86,6 +85,8 @@ public class TimerHandler {
 
         final int totalTimeTilUpdate = 60 * updateTimeMin;
         localTime = totalTimeTilUpdate;
+
+        updateScoreboardWithRankings();
 
         new BukkitRunnable() {
             @Override

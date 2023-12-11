@@ -2,6 +2,7 @@ package org.dlds.mobbattle.repositorys;
 
 import org.bukkit.Bukkit;
 import org.bukkit.configuration.file.YamlConfiguration;
+import org.bukkit.entity.Player;
 import org.bukkit.plugin.Plugin;
 import org.dlds.mobbattle.objects.Category;
 import org.dlds.mobbattle.objects.ClockInventory;
@@ -47,6 +48,14 @@ public class ClockInventoryRepository {
 
     public HashMap<UUID, ClockInventory> getInventoryMap() {
         return inventoryMap;
+    }
+
+    public void initializeInventoriesForOnlinePlayers() {
+        for (Player player : Bukkit.getServer().getOnlinePlayers()) {
+            UUID playerId = player.getUniqueId();
+
+            inventoryMap.computeIfAbsent(playerId, k -> new ClockInventory());
+        }
     }
 
     public void saveAllInventories() {
