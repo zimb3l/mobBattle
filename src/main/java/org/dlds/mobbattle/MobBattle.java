@@ -30,6 +30,7 @@ public final class MobBattle extends JavaPlugin {
     private ClockInventoryRepository clockInventoryRepository;
     private MobBattleRepository mobBattleRepository;
     private boolean isBattleRunning = false;
+    private boolean isBattlePaused = false;
 
     @Override
     public void onEnable() {
@@ -54,12 +55,14 @@ public final class MobBattle extends JavaPlugin {
         Bukkit.getLogger().info("Finished loading all clock inventories!");
 
         mobBattleRepository = new MobBattleRepository(this);
-        isBattleRunning = mobBattleRepository.loadGameState();
+        MobBattleRepository.GameState gameState = mobBattleRepository.loadGameState();
+        isBattleRunning = gameState.isBattleRunning;
+        isBattlePaused = gameState.isBattlePaused;
     }
 
     @Override
     public void onDisable() {
-        mobBattleRepository.saveGameState(isBattleRunning);
+        mobBattleRepository.saveGameState(isBattleRunning, isBattlePaused);
         Bukkit.getLogger().info("Saving all clock inventories!");
         clockInventoryRepository.saveAllInventories();
         Bukkit.getLogger().info("Finished saving all clock inventories!");
@@ -81,6 +84,8 @@ public final class MobBattle extends JavaPlugin {
                         player.removePotionEffect(PotionEffectType.REGENERATION);
                         player.removePotionEffect(PotionEffectType.HEALTH_BOOST);
                         player.removePotionEffect(PotionEffectType.HEAL);
+                        player.removePotionEffect(PotionEffectType.DAMAGE_RESISTANCE);
+                        player.removePotionEffect(PotionEffectType.JUMP);
 
                         player.playSound(player.getLocation(), Sound.ENTITY_ENDER_DRAGON_GROWL, 1.0F, 1.0F);
                     }
@@ -108,6 +113,8 @@ public final class MobBattle extends JavaPlugin {
                         player.addPotionEffect(new PotionEffect(PotionEffectType.REGENERATION, 200, 255, false, false));
                         player.addPotionEffect(new PotionEffect(PotionEffectType.HEALTH_BOOST, 200, 49, false, false));
                         player.addPotionEffect(new PotionEffect(PotionEffectType.HEAL, 200, 255, false, false));
+                        player.addPotionEffect(new PotionEffect(PotionEffectType.DAMAGE_RESISTANCE, 200, 255, false, false));
+                        player.addPotionEffect(new PotionEffect(PotionEffectType.JUMP, 200, -100));
                     }
 
                     if (countdown == 3) {
@@ -139,11 +146,6 @@ public final class MobBattle extends JavaPlugin {
     }
 
     public void startBattle() {
-        if (isBattleRunning) {
-            Bukkit.getServer().broadcast(Component.text("A battle is already ongoing!", NamedTextColor.RED));
-            return;
-        }
-
         World world = Bukkit.getServer().getWorlds().get(0);
 
         locationCalculator.calculateSpawnLocations(world);
@@ -180,6 +182,38 @@ public final class MobBattle extends JavaPlugin {
         }
 
         clockInventoryRepository.resetPlayerData();
+    }
+
+    public void pauseBattle() {
+        if (!isBattleRunning || isBattlePaused) {
+            return;
+        }
+        isBattlePaused = true;
+        timerHandler.pauseTimer();
+
+        for (Player player : Bukkit.getOnlinePlayers()) {
+            player.addPotionEffect(new PotionEffect(PotionEffectType.DAMAGE_RESISTANCE, Integer.MAX_VALUE, 255, false, false));
+            player.addPotionEffect(new PotionEffect(PotionEffectType.BLINDNESS, Integer.MAX_VALUE, 255, false, false));
+            player.addPotionEffect(new PotionEffect(PotionEffectType.SLOW, Integer.MAX_VALUE, 255, false, false));
+            player.addPotionEffect(new PotionEffect(PotionEffectType.JUMP, Integer.MAX_VALUE, -100));
+            player.addPotionEffect(new PotionEffect(PotionEffectType.SLOW_DIGGING, Integer.MAX_VALUE, 255));
+        }
+    }
+
+    public void resumeBattle() {
+        if (!isBattleRunning || !isBattlePaused) {
+            return;
+        }
+        isBattlePaused = false;
+        timerHandler.resumeTimer();
+
+        for (Player player : Bukkit.getOnlinePlayers()) {
+            player.removePotionEffect(PotionEffectType.DAMAGE_RESISTANCE);
+            player.removePotionEffect(PotionEffectType.BLINDNESS);
+            player.removePotionEffect(PotionEffectType.SLOW);
+            player.removePotionEffect(PotionEffectType.JUMP);
+            player.removePotionEffect(PotionEffectType.SLOW_DIGGING);
+        }
     }
 
     public boolean onCommand(@NotNull CommandSender sender, Command command, @NotNull String label, String[] args) {
@@ -241,6 +275,12 @@ public final class MobBattle extends JavaPlugin {
                 sender.sendMessage(Component.text("You do not have permission to use this command.", NamedTextColor.RED));
                 return false;
             }
+
+            if (isBattleRunning) {
+                Bukkit.getServer().broadcast(Component.text("A battle is already ongoing!", NamedTextColor.RED));
+                return true;
+            }
+
             startBattle();
             Bukkit.getServer().broadcast(Component.text("GET READY, GAME WILL START NOW!!", NamedTextColor.GREEN));
             Bukkit.getServer().broadcast(Component.text("GET READY, GAME WILL START NOW!!", NamedTextColor.AQUA));
@@ -260,6 +300,38 @@ public final class MobBattle extends JavaPlugin {
 
             endBattle();
             Bukkit.getServer().broadcast(Component.text("The battle has been ended.", NamedTextColor.GREEN));
+            return true;
+        }
+
+        if (command.getName().equalsIgnoreCase("pauseBattle")) {
+            if (!sender.hasPermission("mobbattle.pauseBattle")) {
+                sender.sendMessage(Component.text("You do not have permission to use this command.", NamedTextColor.RED));
+                return false;
+            }
+
+            if (isBattlePaused || !isBattleRunning) {
+                sender.sendMessage(Component.text("The battle is already paused.", NamedTextColor.RED));
+                return true;
+            }
+
+            pauseBattle();
+            Bukkit.getServer().broadcast(Component.text("Battle has been paused.", NamedTextColor.YELLOW));
+            return true;
+        }
+
+        if (command.getName().equalsIgnoreCase("resumeBattle")) {
+            if (!sender.hasPermission("mobbattle.resumeBattle")) {
+                sender.sendMessage(Component.text("You do not have permission to use this command.", NamedTextColor.RED));
+                return false;
+            }
+
+            if (!isBattlePaused || !isBattleRunning) {
+                sender.sendMessage(Component.text("There is no paused battle.", NamedTextColor.RED));
+                return true;
+            }
+
+            resumeBattle();
+            Bukkit.getServer().broadcast(Component.text("Battle has been resumed.", NamedTextColor.GREEN));
             return true;
         }
 

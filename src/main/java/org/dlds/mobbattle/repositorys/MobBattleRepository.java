@@ -14,11 +14,12 @@ public class MobBattleRepository {
         this.plugin = plugin;
     }
 
-    public void saveGameState(boolean isBattleRunning) {
+    public void saveGameState(boolean isBattleRunning, boolean isBattlePaused) {
         File file = new File(plugin.getDataFolder(), GAME_STATE_FILE);
         YamlConfiguration config = new YamlConfiguration();
 
         config.set("isBattleRunning", isBattleRunning);
+        config.set("isBattlePaused", isBattlePaused);
 
         try {
             config.save(file);
@@ -27,14 +28,27 @@ public class MobBattleRepository {
         }
     }
 
-    public boolean loadGameState() {
+    public GameState loadGameState() {
         File file = new File(plugin.getDataFolder(), GAME_STATE_FILE);
 
         if (!file.exists()) {
-            return false;
+            return new GameState(false, false);
         }
 
         YamlConfiguration config = YamlConfiguration.loadConfiguration(file);
-        return config.getBoolean("isBattleRunning", false);
+        boolean isBattleRunning = config.getBoolean("isBattleRunning", false);
+        boolean isPaused = config.getBoolean("isPaused", false);
+
+        return new GameState(isBattleRunning, isPaused);
+    }
+
+    public static class GameState {
+        public final boolean isBattleRunning;
+        public final boolean isBattlePaused;
+
+        public GameState(boolean isBattleRunning, boolean isBattlePaused) {
+            this.isBattleRunning = isBattleRunning;
+            this.isBattlePaused = isBattlePaused;
+        }
     }
 }

@@ -18,3 +18,9 @@ commands:
   endBattle:
     description: Ends the battle.
     usage: /<command>
+  pauseBattle:
+    description: Pauses the battle.
+    usage: /<command>
+  resumeBattle:
+    description: Resumes the battle.
+    usage: /<command>

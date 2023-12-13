@@ -26,10 +26,21 @@ public class TimerHandler {
     private ClockInventoryRepository clockInventoryRepository;
     private Scoreboard scoreboard;
     private Objective objective;
+    private BukkitRunnable currentTask;
 
     public TimerHandler(JavaPlugin plugin) {
         this.plugin = plugin;
         setupScoreboard();
+    }
+
+    public void pauseTimer() {
+        if (currentTask != null) {
+            currentTask.cancel();
+        }
+    }
+
+    public void resumeTimer() {
+        setupScoreboardDisplay();
     }
 
     private void setupScoreboard() {
@@ -103,7 +114,7 @@ public class TimerHandler {
 
         updateScoreboardWithRankings();
 
-        new BukkitRunnable() {
+        currentTask = new BukkitRunnable() {
             @Override
             public void run() {
                 localTime--;
@@ -120,8 +131,8 @@ public class TimerHandler {
                     player.setScoreboard(scoreboard);
                 }
             }
-        }.runTaskTimer(plugin, 0, 20);
-
+        };
+        currentTask.runTaskTimer(plugin, 0, 20);
     }
 
     private void showCountdownTimer() {
