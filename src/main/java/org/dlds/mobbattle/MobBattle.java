@@ -106,7 +106,7 @@ public final class MobBattle extends JavaPlugin {
                         player.addPotionEffect(new PotionEffect(PotionEffectType.SLOW, 200, 255, false, false));
                         player.addPotionEffect(new PotionEffect(PotionEffectType.SATURATION, 200, 255, false, false));
                         player.addPotionEffect(new PotionEffect(PotionEffectType.REGENERATION, 200, 255, false, false));
-                        player.addPotionEffect(new PotionEffect(PotionEffectType.HEALTH_BOOST, 200, 255, false, false));
+                        player.addPotionEffect(new PotionEffect(PotionEffectType.HEALTH_BOOST, 200, 49, false, false));
                         player.addPotionEffect(new PotionEffect(PotionEffectType.HEAL, 200, 255, false, false));
                     }
 

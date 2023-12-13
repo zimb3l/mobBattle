@@ -1,7 +1,10 @@
 package org.dlds.mobbattle;
 
 import net.kyori.adventure.text.Component;
+import net.kyori.adventure.text.format.NamedTextColor;
+import net.kyori.adventure.title.Title;
 import org.bukkit.Bukkit;
+import org.bukkit.Sound;
 import org.bukkit.entity.Player;
 import org.bukkit.plugin.java.JavaPlugin;
 import org.bukkit.scheduler.BukkitRunnable;
@@ -9,6 +12,7 @@ import org.bukkit.scoreboard.*;
 import org.dlds.mobbattle.objects.ClockInventory;
 import org.dlds.mobbattle.repositorys.ClockInventoryRepository;
 
+import java.time.Duration;
 import java.util.*;
 
 public class TimerHandler {
@@ -16,7 +20,7 @@ public class TimerHandler {
     final String name_string = "mobBattle";
     final String display_name_string = "Mob Battle";
     private final JavaPlugin plugin;
-    int updateTimeMin = 1;
+    int updateTimeMin = 30;
     private int localTime = updateTimeMin * 60;
     private int elapsedTime = 0;
     private ClockInventoryRepository clockInventoryRepository;
@@ -50,9 +54,16 @@ public class TimerHandler {
         objective.displayName(Component.text(timeString));
     }
 
-    void updateScoreboardWithRankings() {
-        updateScoreboard();
+    void clearExistingTeams(int teamAmount) {
+        for (int i = 1; i <= teamAmount; i++) {
+            Team existingTeam = scoreboard.getTeam("rank" + i);
+            if (existingTeam != null) {
+                existingTeam.unregister();
+            }
+        }
+    }
 
+    void updateScoreboardWithRankings() {
         List<Map.Entry<UUID, Integer>> playerPoints = new ArrayList<>();
         for (Map.Entry<UUID, ClockInventory> entry : clockInventoryRepository.getInventoryMap().entrySet()) {
             UUID playerId = entry.getKey();
@@ -62,20 +73,24 @@ public class TimerHandler {
         }
         playerPoints.sort((entry1, entry2) -> entry2.getValue().compareTo(entry1.getValue()));
 
-        scoreboard.getEntries().forEach(entry -> {
-            if (entry.startsWith("Position ")) {
-                scoreboard.resetScores(entry);
-            }
-        });
+        clearExistingTeams(playerPoints.size());
 
         int rank = 1;
         for (Map.Entry<UUID, Integer> entry : playerPoints) {
             UUID playerId = entry.getKey();
-            String playerName = Bukkit.getOfflinePlayer(playerId).getName();
-            String rankEntry = String.format("Position %d : %s", rank, playerName);
-            Score score = objective.getScore(rankEntry);
 
-            score.setScore(0);
+            String playerName = Bukkit.getOfflinePlayer(playerId).getName();
+            Team team = scoreboard.registerNewTeam("rank" + rank);
+            NamedTextColor color = (rank == 1) ? NamedTextColor.GOLD : (rank == 2) ? NamedTextColor.GRAY : (rank == 3) ? NamedTextColor.DARK_RED : NamedTextColor.WHITE;
+
+            team.prefix(Component.text("Position " + rank + " : ", color));
+            team.color(color);
+            if (playerName != null) {
+                team.addEntry(playerName);
+                Score score = objective.getScore(playerName);
+                score.setScore(rank);
+            }
+
             rank++;
         }
     }
@@ -94,10 +109,9 @@ public class TimerHandler {
                 localTime--;
                 elapsedTime++;
 
-                if (localTime <= 0) {
-                    localTime = totalTimeTilUpdate;
-
-                    updateScoreboardWithRankings();
+                if (localTime <= 5) {
+                    showCountdownTimer();
+                    localTime = totalTimeTilUpdate + 5;
                 } else {
                     updateScoreboard();
                 }
@@ -107,6 +121,44 @@ public class TimerHandler {
                 }
             }
         }.runTaskTimer(plugin, 0, 20);
+
     }
 
+    private void showCountdownTimer() {
+        new BukkitRunnable() {
+            int countdown = 5;
+
+            @Override
+            public void run() {
+                if (countdown <= 0) {
+                    for (Player player : Bukkit.getOnlinePlayers()) {
+                        player.showTitle(Title.title(Component.text("Updating Scoreboard!", NamedTextColor.GREEN), Component.empty(), Title.Times.times(Duration.ofMillis(0), Duration.ofSeconds(2), Duration.ofMillis(0))));
+                        player.playSound(player.getLocation(), Sound.ENTITY_ENDER_DRAGON_GROWL, 1.0F, 1.0F);
+                    }
+                    updateScoreboardWithRankings();
+                    cancel();
+                    return;
+                }
+
+                for (Player player : Bukkit.getOnlinePlayers()) {
+                    player.showTitle(Title.title(getCountdownTitle(countdown), Component.empty(), Title.Times.times(Duration.ofMillis(0), Duration.ofSeconds(1), Duration.ofMillis(0))));
+                    player.playSound(player.getLocation(), Sound.BLOCK_NOTE_BLOCK_PLING, 1.0F, 1.0F + (0.1F * countdown));
+                }
+                countdown--;
+            }
+        }.runTaskTimer(plugin, 0, 20);
+    }
+
+    private Component getCountdownTitle(int countdown) {
+        NamedTextColor color;
+        if (countdown <= 1) {
+            color = NamedTextColor.GREEN;
+        } else if (countdown <= 3) {
+            color = NamedTextColor.YELLOW;
+        } else {
+            color = NamedTextColor.RED;
+        }
+
+        return Component.text(countdown, color);
+    }
 }
