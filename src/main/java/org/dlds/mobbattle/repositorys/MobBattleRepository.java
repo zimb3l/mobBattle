@@ -7,7 +7,7 @@ import java.io.File;
 import java.io.IOException;
 
 public class MobBattleRepository {
-    private static final String GAME_STATE_FILE = "gamestate.yml";
+    public static final String GAME_STATE_FILE = "gamestate.yml";
     private final Plugin plugin;
 
     public MobBattleRepository(Plugin plugin) {

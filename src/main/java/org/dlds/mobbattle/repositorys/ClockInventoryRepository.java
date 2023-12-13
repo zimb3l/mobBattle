@@ -84,9 +84,17 @@ public class ClockInventoryRepository {
         File[] files = dataFolder.listFiles((dir, name) -> name.endsWith(".yml"));
         if (files != null) {
             for (File file : files) {
-                UUID playerId = UUID.fromString(file.getName().replace(".yml", ""));
-                ClockInventory loadedInventory = loadClockInventory(playerId);
-                inventoryMap.put(playerId, loadedInventory);
+                String filename = file.getName();
+                if (filename.equals(MobBattleRepository.GAME_STATE_FILE)) {
+                    continue;
+                }
+                try {
+                    UUID playerId = UUID.fromString(file.getName().replace(".yml", ""));
+                    ClockInventory loadedInventory = loadClockInventory(playerId);
+                    inventoryMap.put(playerId, loadedInventory);
+                } catch (IllegalArgumentException e) {
+                    Bukkit.getLogger().warning("Ungültige Datei im Datenordner gefunden: " + filename);
+                }
             }
         }
     }
