@@ -204,16 +204,37 @@ public final class MobBattle extends JavaPlugin {
         if (!isBattleRunning || !isBattlePaused) {
             return;
         }
-        isBattlePaused = false;
-        timerHandler.resumeTimer();
+        new BukkitRunnable() {
+            int countdown = 3;
 
-        for (Player player : Bukkit.getOnlinePlayers()) {
-            player.removePotionEffect(PotionEffectType.DAMAGE_RESISTANCE);
-            player.removePotionEffect(PotionEffectType.BLINDNESS);
-            player.removePotionEffect(PotionEffectType.SLOW);
-            player.removePotionEffect(PotionEffectType.JUMP);
-            player.removePotionEffect(PotionEffectType.SLOW_DIGGING);
-        }
+            @Override
+            public void run() {
+                if (countdown <= 0) {
+                    isBattlePaused = false;
+                    timerHandler.resumeTimer();
+
+                    for (Player player : Bukkit.getOnlinePlayers()) {
+                        player.removePotionEffect(PotionEffectType.DAMAGE_RESISTANCE);
+                        player.removePotionEffect(PotionEffectType.BLINDNESS);
+                        player.removePotionEffect(PotionEffectType.SLOW);
+                        player.removePotionEffect(PotionEffectType.JUMP);
+                        player.removePotionEffect(PotionEffectType.SLOW_DIGGING);
+                    }
+                    for (Player player : Bukkit.getOnlinePlayers()) {
+                        player.showTitle(Title.title(Component.text("Resuming battle!", NamedTextColor.GREEN), Component.empty(), Title.Times.times(Duration.ofMillis(0), Duration.ofSeconds(2), Duration.ofMillis(0))));
+                        player.playSound(player.getLocation(), Sound.ENTITY_ENDER_DRAGON_GROWL, 1.0F, 1.0F);
+                    }
+                    cancel();
+                } else {
+                    for (Player player : Bukkit.getOnlinePlayers()) {
+                        NamedTextColor color = (countdown == 3) ? NamedTextColor.RED : (countdown == 2) ? NamedTextColor.YELLOW : (countdown == 1) ? NamedTextColor.GREEN : NamedTextColor.WHITE;
+                        player.showTitle(Title.title(Component.text(String.valueOf(countdown), color), Component.empty(), Title.Times.times(Duration.ofMillis(0), Duration.ofSeconds(1), Duration.ofMillis(0))));
+                        player.playSound(player.getLocation(), Sound.BLOCK_NOTE_BLOCK_PLING, 1.0F, 1.0F + (0.1F * countdown));
+                    }
+                    countdown--;
+                }
+            }
+        }.runTaskTimer(this, 0, 20);
     }
 
     public boolean onCommand(@NotNull CommandSender sender, Command command, @NotNull String label, String[] args) {
