@@ -3,6 +3,7 @@ package org.dlds.mobbattle;
 import net.kyori.adventure.text.Component;
 import net.kyori.adventure.title.Title;
 import org.bukkit.Bukkit;
+import org.bukkit.Chunk;
 import org.bukkit.Location;
 import org.bukkit.World;
 import org.bukkit.block.Biome;
@@ -36,6 +37,12 @@ public class LocationCalculator {
             double angle = 2 * Math.PI * i / locationCount;
             double x = spawnLocation.getX() + startDistance * Math.cos(angle);
             double z = spawnLocation.getZ() + startDistance * Math.sin(angle);
+
+            Chunk chunk = world.getChunkAt(new Location(world, x, 0, z));
+            if (!chunk.isLoaded()) {
+                chunk.load();
+            }
+
             int y = world.getHighestBlockYAt((int) x, (int) z);
 
             Location location = new Location(world, x, y, z);
