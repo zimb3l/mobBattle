@@ -86,9 +86,12 @@ public class LocationCalculator {
 
     private boolean isLocationSafe(Location location, World world) {
         Biome biome = world.getBiome(location.getBlockX(), location.getBlockY(), location.getBlockZ());
-        boolean isWater = world.getBlockAt(location.getBlockX(), location.getBlockY() - 1, location.getBlockZ()).isLiquid();
 
-        return biome != Biome.OCEAN && biome != Biome.DEEP_OCEAN && !isWater;
+        boolean isWaterBelow = world.getBlockAt(location.getBlockX(), location.getBlockY() - 1, location.getBlockZ()).isLiquid();
+        boolean isWaterAt = world.getBlockAt(location.getBlockX(), location.getBlockY(), location.getBlockZ()).isLiquid();
+        boolean isWaterAbove = world.getBlockAt(location.getBlockX(), location.getBlockY() + 1, location.getBlockZ()).isLiquid();
+
+        return biome != Biome.OCEAN && biome != Biome.DEEP_OCEAN && !isWaterBelow && !isWaterAt && !isWaterAbove;
     }
 
     public void assignPlayerSpawns(PlayerSpawnsAssignedCallback callback) {
