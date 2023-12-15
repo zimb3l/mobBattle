@@ -1,6 +1,7 @@
 package org.dlds.mobbattle;
 
 import net.kyori.adventure.text.Component;
+import net.kyori.adventure.text.format.NamedTextColor;
 import net.kyori.adventure.title.Title;
 import org.bukkit.Bukkit;
 import org.bukkit.Location;
@@ -9,11 +10,13 @@ import org.bukkit.block.Biome;
 import org.bukkit.entity.Player;
 import org.bukkit.plugin.java.JavaPlugin;
 import org.bukkit.scheduler.BukkitRunnable;
+import org.jetbrains.annotations.NotNull;
 
 import java.time.Duration;
 import java.util.ArrayList;
 import java.util.List;
 import java.util.concurrent.atomic.AtomicInteger;
+import java.util.concurrent.atomic.AtomicReference;
 
 public class LocationCalculator {
     private final List<LocationSafetyPair> spawnLocations = new ArrayList<>();
@@ -25,6 +28,29 @@ public class LocationCalculator {
         this.plugin = plugin;
     }
 
+    @NotNull
+    private static BukkitRunnable getTitleUpdater() {
+        AtomicReference<String> titleText = new AtomicReference<>("calculating spawn locations");
+
+        return new BukkitRunnable() {
+            private int dotCount = 1;
+
+            @Override
+            public void run() {
+                StringBuilder titleBuilder = new StringBuilder("calculating spawn locations");
+                for (int i = 0; i < dotCount; i++) {
+                    titleBuilder.append(".");
+                }
+                titleText.set(titleBuilder.toString());
+                for (Player player : Bukkit.getServer().getOnlinePlayers()) {
+                    Title title = Title.title(Component.text(titleText.get(), NamedTextColor.GREEN), Component.empty(), Title.Times.times(Duration.ofMillis(0), Duration.ofSeconds(1), Duration.ofMillis(0)));
+                    player.showTitle(title);
+                }
+                dotCount = (dotCount % 3) + 1;
+            }
+        };
+    }
+
     public int getCurrentPlayerCount() {
         return Bukkit.getServer().getOnlinePlayers().size();
     }
@@ -32,6 +58,8 @@ public class LocationCalculator {
     void calculateSpawnLocations(World world, SpawnLocationsCalculatedCallback callback) {
         Location spawnLocation = world.getSpawnLocation();
         AtomicInteger pendingChunks = new AtomicInteger(locationCount);
+        BukkitRunnable titleUpdater = getTitleUpdater();
+        titleUpdater.runTaskTimerAsynchronously(plugin, 0L, 20L);
 
         for (int i = 0; i < locationCount; i++) {
             double angle = 2 * Math.PI * i / locationCount;
@@ -48,6 +76,7 @@ public class LocationCalculator {
                     spawnLocations.add(new LocationSafetyPair(location, isSafe));
 
                     if (pendingChunks.decrementAndGet() == 0) {
+                        titleUpdater.cancel();
                         callback.onCompleted();
                     }
                 });
@@ -82,7 +111,7 @@ public class LocationCalculator {
                 if (i < players.size()) {
 
                     for (Player player : players) {
-                        Title title = Title.title(Component.text("Teleporting Contestant!"), Component.text(i + 1 + " / " + players.size()), Title.Times.times(Duration.ofMillis(0), Duration.ofSeconds(1), Duration.ofMillis(0)));
+                        Title title = Title.title(Component.text("Teleporting Contestant", NamedTextColor.GREEN), Component.text(i + 1 + " / " + players.size(), NamedTextColor.GREEN), Title.Times.times(Duration.ofMillis(0), Duration.ofSeconds(1), Duration.ofMillis(0)));
                         player.showTitle(title);
                     }
 
@@ -91,7 +120,8 @@ public class LocationCalculator {
                     LocationSafetyPair chosenLocation = getSafeLocation(spawnIndex);
 
                     if (chosenLocation != null && chosenLocation.isSafe) {
-                        player.teleport(chosenLocation.location);
+                        Location teleportLocation = chosenLocation.location.clone().add(0, 2, 0);
+                        player.teleport(teleportLocation);
                     }
                     i++;
                 } else {
@@ -99,7 +129,7 @@ public class LocationCalculator {
                     cancel();
                 }
             }
-        }.runTaskTimer(plugin, 3, 20 * 10);
+        }.runTaskTimer(plugin, 20 * 3, 20 * 10);
     }
 
     private LocationSafetyPair getSafeLocation(int startIndex) {

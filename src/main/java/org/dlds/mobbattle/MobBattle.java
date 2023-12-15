@@ -330,9 +330,7 @@ public final class MobBattle extends JavaPlugin {
             }
 
             startBattle();
-            Bukkit.getServer().broadcast(Component.text("GET READY, GAME WILL START NOW!!", NamedTextColor.GREEN));
-            Bukkit.getServer().broadcast(Component.text("GET READY, GAME WILL START NOW!!", NamedTextColor.AQUA));
-            Bukkit.getServer().broadcast(Component.text("GET READY, GAME WILL START NOW!!", NamedTextColor.DARK_AQUA));
+            Bukkit.getServer().broadcast(Component.text("Get ready, game will start soon!", NamedTextColor.GREEN));
         }
 
         if (command.getName().equalsIgnoreCase("endbattle")) {
