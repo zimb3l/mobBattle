@@ -13,6 +13,7 @@ import org.bukkit.scheduler.BukkitRunnable;
 import java.time.Duration;
 import java.util.ArrayList;
 import java.util.List;
+import java.util.concurrent.atomic.AtomicInteger;
 
 public class LocationCalculator {
     private final List<LocationSafetyPair> spawnLocations = new ArrayList<>();
@@ -28,8 +29,9 @@ public class LocationCalculator {
         return Bukkit.getServer().getOnlinePlayers().size();
     }
 
-    void calculateSpawnLocations(World world) {
+    void calculateSpawnLocations(World world, SpawnLocationsCalculatedCallback callback) {
         Location spawnLocation = world.getSpawnLocation();
+        AtomicInteger pendingChunks = new AtomicInteger(locationCount);
 
         for (int i = 0; i < locationCount; i++) {
             double angle = 2 * Math.PI * i / locationCount;
@@ -44,6 +46,10 @@ public class LocationCalculator {
 
                 Bukkit.getScheduler().runTask(plugin, () -> {
                     spawnLocations.add(new LocationSafetyPair(location, isSafe));
+
+                    if (pendingChunks.decrementAndGet() == 0) {
+                        callback.onCompleted();
+                    }
                 });
             });
         }
@@ -56,9 +62,12 @@ public class LocationCalculator {
         return biome != Biome.OCEAN && biome != Biome.DEEP_OCEAN && !isWater;
     }
 
-    public void assignPlayerSpawns() {
+    public void assignPlayerSpawns(PlayerSpawnsAssignedCallback callback) {
         int playerCount = getCurrentPlayerCount();
-        if (playerCount == 0) return;
+        if (playerCount == 0) {
+            callback.onCompleted();
+            return;
+        }
 
         int locationCount = spawnLocations.size();
         float spawnOffset = (float) locationCount / playerCount;
@@ -84,9 +93,9 @@ public class LocationCalculator {
                     if (chosenLocation != null && chosenLocation.isSafe) {
                         player.teleport(chosenLocation.location);
                     }
-
                     i++;
                 } else {
+                    callback.onCompleted();
                     cancel();
                 }
             }
@@ -109,6 +118,14 @@ public class LocationCalculator {
             }
         }
         return null;
+    }
+
+    public interface SpawnLocationsCalculatedCallback {
+        void onCompleted();
+    }
+
+    public interface PlayerSpawnsAssignedCallback {
+        void onCompleted();
     }
 
     private static class LocationSafetyPair {

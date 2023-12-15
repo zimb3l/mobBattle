@@ -172,12 +172,14 @@ public final class MobBattle extends JavaPlugin {
     public void startBattle() {
         World world = Bukkit.getServer().getWorlds().get(0);
 
-        locationCalculator.calculateSpawnLocations(world);
-        makePlayersReadyForTeleportation(world);
-        locationCalculator.assignPlayerSpawns();
-        initiateStartSequence(world);
-        clockInventoryRepository.initializeInventoriesForOnlinePlayers();
-        timerHandler.setupScoreboardDisplay();
+        locationCalculator.calculateSpawnLocations(world, () -> {
+            makePlayersReadyForTeleportation(world);
+            locationCalculator.assignPlayerSpawns(() -> {
+                initiateStartSequence(world);
+                clockInventoryRepository.initializeInventoriesForOnlinePlayers();
+                timerHandler.setupScoreboardDisplay();
+            });
+        });
     }
 
     public void endBattle() {
