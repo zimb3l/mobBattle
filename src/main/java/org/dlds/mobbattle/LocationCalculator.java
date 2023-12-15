@@ -108,31 +108,38 @@ public class LocationCalculator {
 
         new BukkitRunnable() {
             int i = 0;
+            int countdown = 10;
 
             @Override
             public void run() {
                 if (i < players.size()) {
 
                     for (Player player : players) {
-                        Title title = Title.title(Component.text("Teleporting Contestant", NamedTextColor.GREEN), Component.text(i + 1 + " / " + players.size(), NamedTextColor.GREEN), Title.Times.times(Duration.ofMillis(0), Duration.ofSeconds(1), Duration.ofMillis(0)));
+                        Title title = Title.title(Component.text("Teleporting contestant " + (i + 1) + " / " + players.size(), NamedTextColor.GREEN), Component.text("Next in " + countdown, NamedTextColor.GREEN), Title.Times.times(Duration.ofMillis(0), Duration.ofSeconds(1), Duration.ofMillis(0)));
                         player.showTitle(title);
                     }
 
-                    Player player = players.get(i);
-                    int spawnIndex = Math.round(i * spawnOffset) % locationCount;
-                    LocationSafetyPair chosenLocation = getSafeLocation(spawnIndex);
+                    if (countdown == 0) {
+                        Player playerToTeleport = players.get(i);
+                        int spawnIndex = Math.round(i * spawnOffset) % locationCount;
+                        LocationSafetyPair chosenLocation = getSafeLocation(spawnIndex);
 
-                    if (chosenLocation != null && chosenLocation.isSafe) {
-                        Location teleportLocation = chosenLocation.location.clone().add(0, 2, 0);
-                        player.teleport(teleportLocation);
+                        if (chosenLocation != null && chosenLocation.isSafe) {
+                            Location teleportLocation = chosenLocation.location.clone().add(0, 2, 0);
+                            playerToTeleport.teleport(teleportLocation);
+                        }
+
+                        i++;
+                        countdown = 10;
+                    } else {
+                        countdown--;
                     }
-                    i++;
                 } else {
                     callback.onCompleted();
                     cancel();
                 }
             }
-        }.runTaskTimer(plugin, 20 * 3, 20 * 10);
+        }.runTaskTimer(plugin, 20 * 3, 20);
     }
 
     private LocationSafetyPair getSafeLocation(int startIndex) {
