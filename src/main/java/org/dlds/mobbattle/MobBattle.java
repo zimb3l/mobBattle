@@ -35,7 +35,7 @@ public final class MobBattle extends JavaPlugin {
     @Override
     public void onEnable() {
         Bukkit.getServer().broadcast(Component.text("Welcome to Minecraft mobBattle!", NamedTextColor.AQUA));
-        locationCalculator = new LocationCalculator();
+        locationCalculator = new LocationCalculator(this);
         timerHandler = new TimerHandler(this);
 
         ClockInventoryEventHandler clockInventoryEventHandler = new ClockInventoryEventHandler();
@@ -132,6 +132,30 @@ public final class MobBattle extends JavaPlugin {
         }.runTaskTimer(this, 0, 20);
     }
 
+    private void makePlayersReadyForTeleportation(World world) {
+        for (Player player : Bukkit.getOnlinePlayers()) {
+            Title title = Title.title(Component.text("Starting to teleport people!"), Component.empty(), Title.Times.times(Duration.ofMillis(0), Duration.ofSeconds(1), Duration.ofMillis(0)));
+            player.showTitle(title);
+
+            world.setTime(1000);
+            world.setStorm(false);
+            world.setThundering(false);
+            player.setGameMode(GameMode.ADVENTURE);
+            player.setExp(0.0F);
+            player.setLevel(0);
+            player.getInventory().clear();
+            int duration = 20 * 10 * Bukkit.getOnlinePlayers().size();
+            player.addPotionEffect(new PotionEffect(PotionEffectType.BLINDNESS, duration, 255, false, false));
+            player.addPotionEffect(new PotionEffect(PotionEffectType.SLOW, duration, 255, false, false));
+            player.addPotionEffect(new PotionEffect(PotionEffectType.SATURATION, duration, 255, false, false));
+            player.addPotionEffect(new PotionEffect(PotionEffectType.REGENERATION, duration, 255, false, false));
+            player.addPotionEffect(new PotionEffect(PotionEffectType.HEALTH_BOOST, duration, 49, false, false));
+            player.addPotionEffect(new PotionEffect(PotionEffectType.HEAL, duration, 255, false, false));
+            player.addPotionEffect(new PotionEffect(PotionEffectType.DAMAGE_RESISTANCE, duration, 255, false, false));
+            player.addPotionEffect(new PotionEffect(PotionEffectType.JUMP, duration, -100));
+        }
+    }
+
     private Component getCountdownTitle(int countdown) {
         NamedTextColor color;
         if (countdown <= 3) {
@@ -149,6 +173,7 @@ public final class MobBattle extends JavaPlugin {
         World world = Bukkit.getServer().getWorlds().get(0);
 
         locationCalculator.calculateSpawnLocations(world);
+        makePlayersReadyForTeleportation(world);
         locationCalculator.assignPlayerSpawns();
         initiateStartSequence(world);
         clockInventoryRepository.initializeInventoriesForOnlinePlayers();

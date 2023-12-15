@@ -1,18 +1,28 @@
 package org.dlds.mobbattle;
 
+import net.kyori.adventure.text.Component;
+import net.kyori.adventure.title.Title;
 import org.bukkit.Bukkit;
 import org.bukkit.Location;
 import org.bukkit.World;
 import org.bukkit.block.Biome;
 import org.bukkit.entity.Player;
+import org.bukkit.plugin.java.JavaPlugin;
+import org.bukkit.scheduler.BukkitRunnable;
 
+import java.time.Duration;
 import java.util.ArrayList;
 import java.util.List;
 
 public class LocationCalculator {
     private final List<LocationSafetyPair> spawnLocations = new ArrayList<>();
+    private final JavaPlugin plugin;
     int locationCount = 24;
     int startDistance = 500;
+
+    public LocationCalculator(JavaPlugin plugin) {
+        this.plugin = plugin;
+    }
 
     public int getCurrentPlayerCount() {
         return Bukkit.getServer().getOnlinePlayers().size();
@@ -49,16 +59,34 @@ public class LocationCalculator {
         int locationCount = spawnLocations.size();
         float spawnOffset = (float) locationCount / playerCount;
 
-        int i = 0;
-        for (Player player : Bukkit.getServer().getOnlinePlayers()) {
-            int spawnIndex = Math.round(i * spawnOffset) % locationCount;
-            LocationSafetyPair chosenLocation = getSafeLocation(spawnIndex);
+        List<Player> players = new ArrayList<>(Bukkit.getServer().getOnlinePlayers());
 
-            if (chosenLocation != null && chosenLocation.isSafe) {
-                player.teleport(chosenLocation.location);
+        new BukkitRunnable() {
+            int i = 0;
+
+            @Override
+            public void run() {
+                if (i < players.size()) {
+
+                    for (Player player : players) {
+                        Title title = Title.title(Component.text("Teleporting Contestant!"), Component.text(i + 1 + " / " + players.size()), Title.Times.times(Duration.ofMillis(0), Duration.ofSeconds(1), Duration.ofMillis(0)));
+                        player.showTitle(title);
+                    }
+
+                    Player player = players.get(i);
+                    int spawnIndex = Math.round(i * spawnOffset) % locationCount;
+                    LocationSafetyPair chosenLocation = getSafeLocation(spawnIndex);
+
+                    if (chosenLocation != null && chosenLocation.isSafe) {
+                        player.teleport(chosenLocation.location);
+                    }
+
+                    i++;
+                } else {
+                    cancel();
+                }
             }
-            i++;
-        }
+        }.runTaskTimer(plugin, 3, 20 * 10);
     }
 
     private LocationSafetyPair getSafeLocation(int startIndex) {
