@@ -3,7 +3,6 @@ package org.dlds.mobbattle;
 import net.kyori.adventure.text.Component;
 import net.kyori.adventure.title.Title;
 import org.bukkit.Bukkit;
-import org.bukkit.Chunk;
 import org.bukkit.Location;
 import org.bukkit.World;
 import org.bukkit.block.Biome;
@@ -29,7 +28,6 @@ public class LocationCalculator {
         return Bukkit.getServer().getOnlinePlayers().size();
     }
 
-
     void calculateSpawnLocations(World world) {
         Location spawnLocation = world.getSpawnLocation();
 
@@ -38,17 +36,16 @@ public class LocationCalculator {
             double x = spawnLocation.getX() + startDistance * Math.cos(angle);
             double z = spawnLocation.getZ() + startDistance * Math.sin(angle);
 
-            Chunk chunk = world.getChunkAt(new Location(world, x, 0, z));
-            if (!chunk.isLoaded()) {
-                chunk.load();
-            }
+            world.getChunkAtAsync(new Location(world, x, 0, z)).thenAccept(chunk -> {
+                int y = world.getHighestBlockYAt((int) x, (int) z);
 
-            int y = world.getHighestBlockYAt((int) x, (int) z);
+                Location location = new Location(world, x, y, z);
+                boolean isSafe = isLocationSafe(location, world);
 
-            Location location = new Location(world, x, y, z);
-            boolean isSafe = isLocationSafe(location, world);
-
-            spawnLocations.add(new LocationSafetyPair(location, isSafe));
+                Bukkit.getScheduler().runTask(plugin, () -> {
+                    spawnLocations.add(new LocationSafetyPair(location, isSafe));
+                });
+            });
         }
     }
 
