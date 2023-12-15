@@ -78,7 +78,6 @@ public final class MobBattle extends JavaPlugin {
 
                     for (Player player : Bukkit.getOnlinePlayers()) {
                         player.clearTitle();
-                        player.removePotionEffect(PotionEffectType.BLINDNESS);
                         player.removePotionEffect(PotionEffectType.SLOW);
                         player.removePotionEffect(PotionEffectType.SATURATION);
                         player.removePotionEffect(PotionEffectType.REGENERATION);
@@ -107,19 +106,14 @@ public final class MobBattle extends JavaPlugin {
                         player.setExp(0.0F);
                         player.setLevel(0);
                         player.getInventory().clear();
-                        player.addPotionEffect(new PotionEffect(PotionEffectType.BLINDNESS, 60, 255, false, false));
-                        player.addPotionEffect(new PotionEffect(PotionEffectType.SLOW, 200, 255, false, false));
-                        player.addPotionEffect(new PotionEffect(PotionEffectType.SATURATION, 200, 255, false, false));
-                        player.addPotionEffect(new PotionEffect(PotionEffectType.REGENERATION, 200, 255, false, false));
-                        player.addPotionEffect(new PotionEffect(PotionEffectType.HEALTH_BOOST, 200, 49, false, false));
-                        player.addPotionEffect(new PotionEffect(PotionEffectType.HEAL, 200, 255, false, false));
-                        player.addPotionEffect(new PotionEffect(PotionEffectType.DAMAGE_RESISTANCE, 200, 255, false, false));
-                        player.addPotionEffect(new PotionEffect(PotionEffectType.JUMP, 200, -100));
+                    }
+
+                    if (countdown == 7) {
+                        player.removePotionEffect(PotionEffectType.BLINDNESS);
                     }
 
                     if (countdown == 3) {
                         player.setGameMode(GameMode.SURVIVAL);
-
                         ItemStack clock = new ItemStack(Material.CLOCK, 1);
                         player.getInventory().setItem(8, clock);
                     }
@@ -134,7 +128,7 @@ public final class MobBattle extends JavaPlugin {
 
     private void makePlayersReadyForTeleportation(World world) {
         for (Player player : Bukkit.getOnlinePlayers()) {
-            Title title = Title.title(Component.text("Starting to teleport people!"), Component.empty(), Title.Times.times(Duration.ofMillis(0), Duration.ofSeconds(1), Duration.ofMillis(0)));
+            Title title = Title.title(Component.text("Starting to teleport people!", NamedTextColor.GREEN), Component.empty(), Title.Times.times(Duration.ofMillis(0), Duration.ofSeconds(1), Duration.ofMillis(0)));
             player.showTitle(title);
 
             world.setTime(1000);
@@ -144,15 +138,14 @@ public final class MobBattle extends JavaPlugin {
             player.setExp(0.0F);
             player.setLevel(0);
             player.getInventory().clear();
-            int duration = 20 * 10 * Bukkit.getOnlinePlayers().size();
-            player.addPotionEffect(new PotionEffect(PotionEffectType.BLINDNESS, duration, 255, false, false));
-            player.addPotionEffect(new PotionEffect(PotionEffectType.SLOW, duration, 255, false, false));
-            player.addPotionEffect(new PotionEffect(PotionEffectType.SATURATION, duration, 255, false, false));
-            player.addPotionEffect(new PotionEffect(PotionEffectType.REGENERATION, duration, 255, false, false));
-            player.addPotionEffect(new PotionEffect(PotionEffectType.HEALTH_BOOST, duration, 49, false, false));
-            player.addPotionEffect(new PotionEffect(PotionEffectType.HEAL, duration, 255, false, false));
-            player.addPotionEffect(new PotionEffect(PotionEffectType.DAMAGE_RESISTANCE, duration, 255, false, false));
-            player.addPotionEffect(new PotionEffect(PotionEffectType.JUMP, duration, -100));
+            player.addPotionEffect(new PotionEffect(PotionEffectType.BLINDNESS, Integer.MAX_VALUE, 255, false, false));
+            player.addPotionEffect(new PotionEffect(PotionEffectType.SLOW, Integer.MAX_VALUE, 255, false, false));
+            player.addPotionEffect(new PotionEffect(PotionEffectType.SATURATION, Integer.MAX_VALUE, 255, false, false));
+            player.addPotionEffect(new PotionEffect(PotionEffectType.REGENERATION, Integer.MAX_VALUE, 255, false, false));
+            player.addPotionEffect(new PotionEffect(PotionEffectType.HEALTH_BOOST, Integer.MAX_VALUE, 49, false, false));
+            player.addPotionEffect(new PotionEffect(PotionEffectType.HEAL, Integer.MAX_VALUE, 255, false, false));
+            player.addPotionEffect(new PotionEffect(PotionEffectType.DAMAGE_RESISTANCE, Integer.MAX_VALUE, 255, false, false));
+            player.addPotionEffect(new PotionEffect(PotionEffectType.JUMP, Integer.MAX_VALUE, -100));
         }
     }
 
