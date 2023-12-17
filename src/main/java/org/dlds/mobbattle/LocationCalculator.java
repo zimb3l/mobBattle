@@ -19,7 +19,7 @@ import java.util.concurrent.atomic.AtomicInteger;
 import java.util.concurrent.atomic.AtomicReference;
 
 public class LocationCalculator {
-    private final List<LocationSafetyPair> spawnLocations = new ArrayList<>();
+    private final List<Location> spawnLocations = new ArrayList<>();
     private final JavaPlugin plugin;
     int locationCount = 24;
     int startDistance = 500;
@@ -57,7 +57,8 @@ public class LocationCalculator {
 
     void calculateSpawnLocations(World world, SpawnLocationsCalculatedCallback callback) {
         Location spawnLocation = world.getSpawnLocation();
-        AtomicInteger pendingChunks = new AtomicInteger(locationCount);
+        int playerCount = Bukkit.getServer().getOnlinePlayers().size();
+        AtomicInteger pendingChunks = new AtomicInteger(playerCount);
         BukkitRunnable titleUpdater = getTitleUpdater();
         titleUpdater.runTaskTimerAsynchronously(plugin, 0L, 20L);
 
@@ -73,11 +74,12 @@ public class LocationCalculator {
                 boolean isSafe = isLocationSafe(location, world);
 
                 Bukkit.getScheduler().runTask(plugin, () -> {
-                    spawnLocations.add(new LocationSafetyPair(location, isSafe));
-
-                    if (pendingChunks.decrementAndGet() == 0) {
-                        titleUpdater.cancel();
-                        callback.onCompleted();
+                    if (isSafe) {
+                        spawnLocations.add(location);
+                        if (pendingChunks.decrementAndGet() == 0) {
+                            titleUpdater.cancel();
+                            callback.onCompleted();
+                        }
                     }
                 });
             });
@@ -101,9 +103,6 @@ public class LocationCalculator {
             return;
         }
 
-        int locationCount = spawnLocations.size();
-        float spawnOffset = (float) locationCount / playerCount;
-
         List<Player> players = new ArrayList<>(Bukkit.getServer().getOnlinePlayers());
 
         new BukkitRunnable() {
@@ -121,11 +120,10 @@ public class LocationCalculator {
 
                     if (countdown == 0) {
                         Player playerToTeleport = players.get(i);
-                        int spawnIndex = Math.round(i * spawnOffset) % locationCount;
-                        LocationSafetyPair chosenLocation = getSafeLocation(spawnIndex);
+                        Location chosenLocation = spawnLocations.get(i);
 
-                        if (chosenLocation != null && chosenLocation.isSafe) {
-                            Location teleportLocation = chosenLocation.location.clone().add(0, 2, 0);
+                        if (chosenLocation != null) {
+                            Location teleportLocation = chosenLocation.clone().add(0, 2, 0);
                             playerToTeleport.teleport(teleportLocation);
                         }
 
@@ -142,39 +140,11 @@ public class LocationCalculator {
         }.runTaskTimer(plugin, 20 * 3, 20);
     }
 
-    private LocationSafetyPair getSafeLocation(int startIndex) {
-
-        int maxDistance = 3;
-
-        for (int distance = 0; distance <= maxDistance; distance++) {
-
-            for (int direction = -1; direction <= 1; direction += 2) {
-                int checkIndex = (startIndex + distance * direction + locationCount) % locationCount;
-                LocationSafetyPair locationPair = spawnLocations.get(checkIndex);
-
-                if (locationPair.isSafe) {
-                    return locationPair;
-                }
-            }
-        }
-        return null;
-    }
-
     public interface SpawnLocationsCalculatedCallback {
         void onCompleted();
     }
 
     public interface PlayerSpawnsAssignedCallback {
         void onCompleted();
-    }
-
-    private static class LocationSafetyPair {
-        public Location location;
-        public boolean isSafe;
-
-        public LocationSafetyPair(Location location, boolean isSafe) {
-            this.location = location;
-            this.isSafe = isSafe;
-        }
     }
 }
