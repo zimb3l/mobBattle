@@ -156,6 +156,12 @@ public class ClockInventory implements Listener {
             case GOLDEN_APPLE:
                 rewardName += "Golden Apple";
                 break;
+            case COOKED_BEEF:
+                rewardName += "Cooked Beef";
+                break;
+            case GOLD_INGOT:
+                rewardName += "Gold Ingot";
+                break;
             default:
                 break;
         }
@@ -181,10 +187,10 @@ public class ClockInventory implements Listener {
             SkullMeta meta = (SkullMeta) categoryHead.getItemMeta();
 
             NamedTextColor textColor = allMobsKilled ? NamedTextColor.RED : NamedTextColor.GREEN;
-            if(category.getPoints() > 1){
-                meta.displayName(Component.text("Category: " + category.getCategoryNumber()+ " | " + category.getPoints() + " Points", textColor));
+            if (category.getPoints() > 1) {
+                meta.displayName(Component.text("Category: " + category.getCategoryNumber() + " | " + category.getPoints() + " Points", textColor));
             } else {
-                meta.displayName(Component.text("Category: " + category.getCategoryNumber()+ " | " + category.getPoints() + " Point", textColor));
+                meta.displayName(Component.text("Category: " + category.getCategoryNumber() + " | " + category.getPoints() + " Point", textColor));
             }
 
 

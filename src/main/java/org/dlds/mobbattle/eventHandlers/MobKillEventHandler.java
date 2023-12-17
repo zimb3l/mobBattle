@@ -43,14 +43,17 @@ public class MobKillEventHandler implements Listener {
                 player.getWorld().dropItemNaturally(event.getEntity().getLocation(), reward);
             }
 
-            if (random.nextDouble() < 0.05) {
-                for (ItemStack luckyReward : category.getLuckyRewards()) {
-                    player.getWorld().dropItemNaturally(event.getEntity().getLocation(), luckyReward);
-                }
-            } else if (random.nextDouble() < 0.15) {
+            if (random.nextDouble() < 0.15) {
                 List<ItemStack> luckyRewards = category.getLuckyRewards();
-                ItemStack randomLuckyReward = luckyRewards.get(random.nextInt(luckyRewards.size()));
-                player.getWorld().dropItemNaturally(event.getEntity().getLocation(), randomLuckyReward);
+                int categoryNumber = category.getCategoryNumber();
+                if (categoryNumber == 2) {
+                    for (ItemStack luckyReward : category.getLuckyRewards()) {
+                        player.getWorld().dropItemNaturally(event.getEntity().getLocation(), luckyReward);
+                    }
+                } else {
+                    ItemStack randomLuckyReward = luckyRewards.get(random.nextInt(luckyRewards.size()));
+                    player.getWorld().dropItemNaturally(event.getEntity().getLocation(), randomLuckyReward);
+                }
             }
         }
     }
